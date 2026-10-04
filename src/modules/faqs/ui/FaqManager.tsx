@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { HelpCircle, Plus, Edit2, Trash2, CheckCircle2, X } from "lucide-react";
+import { HelpCircle, Plus, Edit2, Trash2, CheckCircle2, X, Search } from "lucide-react";
 import type { FaqEntity } from "../types";
+import { cn } from "@/core/lib/cn";
 
 export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
   const [faqs, setFaqs] = useState(initialFaqs);
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingFaq, setEditingFaq] = useState<FaqEntity | null>(null);
 
@@ -21,10 +23,14 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
     ...Array.from(new Set(faqs.map((f) => f.category))),
   ];
 
-  const filteredFaqs =
-    categoryFilter === "all"
-      ? faqs
-      : faqs.filter((f) => f.category === categoryFilter);
+  const filteredFaqs = faqs.filter((f) => {
+    const matchesCat = categoryFilter === "all" || f.category === categoryFilter;
+    const matchesSearch =
+      search.trim() === "" ||
+      f.question.toLowerCase().includes(search.toLowerCase()) ||
+      f.answerHtml.toLowerCase().includes(search.toLowerCase());
+    return matchesCat && matchesSearch;
+  });
 
   const openCreateModal = () => {
     setEditingFaq(null);
@@ -110,97 +116,126 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
   return (
     <div className="space-y-6">
       {/* Top Filter and Actions */}
-      <div className="card-surface p-4 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-neutral-400 mr-2">
-            Categories:
-          </span>
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setCategoryFilter(cat)}
-              className={`px-3 py-1 rounded-[4px] font-mono text-[10px] uppercase tracking-[0.14em] transition-colors ${
-                categoryFilter === cat
-                  ? "bg-white text-neutral-900 font-semibold"
-                  : "bg-[#161616] text-neutral-400 hover:text-white border hairline"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+      <div className="card-surface p-4 flex flex-wrap items-center justify-between gap-4 border hairline">
+        <div className="flex flex-wrap items-center gap-3 flex-1">
+          {/* Quick Search */}
+          <div className="relative min-w-[200px] max-w-xs">
+            <Search
+              size={12}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-dim)]"
+            />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search questions..."
+              className="input-text pl-8 py-1.5 text-xs input-mono"
+            />
+          </div>
+
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+            <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--color-ink-dim)] mr-1">
+              Categories:
+            </span>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setCategoryFilter(cat)}
+                className={cn(
+                  "px-2.5 py-1 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.12em] transition-colors",
+                  categoryFilter === cat
+                    ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold shadow-sm"
+                    : "bg-[var(--color-surface)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] border hairline"
+                )}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
           {toast && (
-            <span className="flex items-center gap-1.5 font-mono text-[10px] text-emerald-400 bg-emerald-950/30 border border-emerald-500/30 px-2 py-1 rounded-[3px]">
+            <span className="badge-status-success">
               <CheckCircle2 size={11} /> {toast}
             </span>
           )}
           <button
             onClick={openCreateModal}
-            className="btn-pill h-8 px-3 text-[10px] inline-flex items-center gap-1.5"
+            className="btn-pill h-8 px-3.5 text-[10px] flex items-center gap-1.5"
           >
             <Plus size={12} />
-            <span>New FAQ Item</span>
+            <span>Add FAQ</span>
           </button>
         </div>
       </div>
 
-      {/* FAQs List */}
-      <div className="space-y-3">
-        {filteredFaqs.map((faq, idx) => (
-          <div
-            key={faq.id}
-            className="card-surface p-6 flex items-start justify-between gap-6 group hover:border-neutral-500/40 transition-colors"
-          >
-            <div className="space-y-2 flex-1 min-w-0">
-              <div className="flex items-center gap-3">
-                <span className="font-mono text-[10px] text-neutral-500 uppercase tracking-[0.14em]">
-                  #{idx + 1}
-                </span>
-                <span className="font-mono text-[9px] uppercase tracking-[0.16em] px-2 py-0.5 rounded-[3px] border border-neutral-700 bg-neutral-800 text-neutral-300">
-                  {faq.category}
-                </span>
-              </div>
-              <h4 className="font-medium text-base text-white">{faq.question}</h4>
-              <p
-                className="text-xs text-neutral-400 leading-relaxed max-w-3xl"
-                dangerouslySetInnerHTML={{ __html: faq.answerHtml }}
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => openEditModal(faq)}
-                className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-[4px] transition-colors"
-                title="Edit FAQ"
-              >
-                <Edit2 size={14} />
-              </button>
-              <button
-                onClick={() => handleDelete(faq.id)}
-                className="p-2 text-neutral-500 hover:text-red-400 hover:bg-neutral-800 rounded-[4px] transition-colors"
-                title="Delete FAQ"
-              >
-                <Trash2 size={14} />
-              </button>
+      {/* FAQ Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {filteredFaqs.length === 0 ? (
+          <div className="md:col-span-2 p-12 text-center card-surface border hairline">
+            <HelpCircle size={24} className="mx-auto text-[var(--color-ink-dim)] mb-2" />
+            <div className="font-mono text-xs text-[var(--color-ink-muted)]">
+              No FAQs found matching filter.
             </div>
           </div>
-        ))}
+        ) : (
+          filteredFaqs.map((faq) => (
+            <div
+              key={faq.id}
+              className="card-surface p-5 rounded-[4px] border hairline flex flex-col justify-between space-y-4 hover:border-[var(--color-line-strong)] transition-all group shadow-sm"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-mono text-[9px] uppercase px-2 py-0.5 rounded-[3px] border hairline bg-[var(--color-surface)] text-[var(--color-ink-dim)]">
+                    {faq.category}
+                  </span>
+                  <span className="font-mono text-[9px] text-[var(--color-ink-dim)]">
+                    Order: {faq.orderIndex}
+                  </span>
+                </div>
+                <h3 className="font-medium text-sm text-[var(--color-ink)] leading-snug">
+                  {faq.question}
+                </h3>
+                <div
+                  className="text-xs text-[var(--color-ink-muted)] leading-relaxed line-clamp-4"
+                  dangerouslySetInnerHTML={{ __html: faq.answerHtml }}
+                />
+              </div>
+
+              <div className="pt-3 border-t hairline flex items-center justify-end gap-1.5">
+                <button
+                  onClick={() => openEditModal(faq)}
+                  className="p-1.5 text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] rounded-[3px] transition-colors"
+                  title="Edit FAQ"
+                >
+                  <Edit2 size={13} />
+                </button>
+                <button
+                  onClick={() => handleDelete(faq.id)}
+                  className="p-1.5 text-[var(--color-ink-dim)] hover:text-red-500 hover:bg-red-500/10 rounded-[3px] transition-colors"
+                  title="Delete FAQ"
+                >
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Modal Dialog for Create/Edit */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="card-surface max-w-xl w-full p-6 space-y-5 bg-[#121212] border border-neutral-700">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="card-surface max-w-xl w-full p-6 space-y-5 border hairline-strong shadow-2xl rounded-[6px]">
             <div className="flex items-center justify-between border-b hairline pb-3">
-              <h3 className="font-mono text-xs uppercase tracking-[0.16em] text-white">
+              <h3 className="font-mono text-xs uppercase tracking-[0.14em] font-semibold text-[var(--color-ink)]">
                 {editingFaq ? "Edit FAQ Item" : "Create New FAQ"}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-neutral-400 hover:text-white"
+                className="text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] p-1 rounded"
               >
                 <X size={16} />
               </button>
@@ -208,47 +243,41 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
 
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <label className="block font-mono text-[10px] uppercase text-neutral-400 mb-1">
-                  Question
-                </label>
+                <label className="label-text">Question</label>
                 <input
                   type="text"
                   required
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   placeholder="e.g. What does AI Deployed actually do?"
-                  className="w-full bg-[#181818] border hairline rounded-[4px] px-3.5 py-2 text-xs text-white focus:border-neutral-400 outline-none"
+                  className="input-text font-medium"
                 />
               </div>
 
               <div>
-                <label className="block font-mono text-[10px] uppercase text-neutral-400 mb-1">
-                  Category Tag
-                </label>
+                <label className="label-text">Category Tag</label>
                 <input
                   type="text"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   placeholder="e.g. general, business, governance"
-                  className="w-full bg-[#181818] border hairline rounded-[4px] px-3.5 py-2 text-xs font-mono text-white focus:border-neutral-400 outline-none"
+                  className="input-text input-mono"
                 />
               </div>
 
               <div>
-                <label className="block font-mono text-[10px] uppercase text-neutral-400 mb-1">
-                  Answer (HTML / Rich text allowed)
-                </label>
+                <label className="label-text">Answer (HTML / Rich text allowed)</label>
                 <textarea
                   rows={5}
                   required
                   value={answerHtml}
                   onChange={(e) => setAnswerHtml(e.target.value)}
                   placeholder="Detailed answer text..."
-                  className="w-full bg-[#181818] border hairline rounded-[4px] px-3.5 py-2 text-xs text-neutral-300 focus:border-neutral-400 outline-none leading-relaxed"
+                  className="input-text leading-relaxed text-xs"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t hairline">
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t hairline">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
@@ -261,7 +290,7 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
                   disabled={saving}
                   className="btn-pill h-8 px-4 text-[10px]"
                 >
-                  {saving ? "Saving..." : "Save FAQ"}
+                  {saving ? "Saving..." : editingFaq ? "Update FAQ" : "Create FAQ"}
                 </button>
               </div>
             </form>

@@ -37,11 +37,24 @@ export default async function DashboardPage() {
     where: { status: "new" },
   });
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "new":
+        return <span className="badge-status-new">New</span>;
+      case "in_review":
+        return <span className="badge-status-review">In Review</span>;
+      case "contacted":
+        return <span className="badge-status-success">Contacted</span>;
+      default:
+        return <span className="badge-status-neutral">{status}</span>;
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="max-w-7xl mx-auto space-y-10">
         {/* Top Hero Banner */}
-        <div className="card-surface p-8 relative overflow-hidden">
+        <div className="card-surface p-8 relative overflow-hidden border hairline">
           <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-white/[0.04] to-transparent pointer-events-none" />
           <div className="relative z-10 max-w-2xl">
             <span className="eyebrow block mb-3">Control Plane · AI Deployed</span>
@@ -55,7 +68,7 @@ export default async function DashboardPage() {
                 href="https://www.aideployed.io"
                 target="_blank"
                 rel="noreferrer"
-                className="text-[var(--color-ink)] underline underline-offset-4 hover:text-[var(--color-accent)]"
+                className="text-[var(--color-ink)] underline underline-offset-4 hover:text-[var(--color-accent)] font-medium"
               >
                 aideployed.io
               </a>
@@ -68,7 +81,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             href="/content"
-            className="card-surface p-6 flex flex-col justify-between group hover:border-[var(--color-line-strong)] transition-all"
+            className="card-surface p-6 flex flex-col justify-between group hover:border-[var(--color-line-strong)] transition-all border hairline"
           >
             <div className="flex items-center justify-between text-[var(--color-ink-muted)]">
               <span className="font-mono text-[10px] uppercase tracking-[0.16em]">
@@ -88,7 +101,7 @@ export default async function DashboardPage() {
 
           <Link
             href="/platform"
-            className="card-surface p-6 flex flex-col justify-between group hover:border-[var(--color-line-strong)] transition-all"
+            className="card-surface p-6 flex flex-col justify-between group hover:border-[var(--color-line-strong)] transition-all border hairline"
           >
             <div className="flex items-center justify-between text-[var(--color-ink-muted)]">
               <span className="font-mono text-[10px] uppercase tracking-[0.16em]">
@@ -108,7 +121,7 @@ export default async function DashboardPage() {
 
           <Link
             href="/leads"
-            className="card-surface p-6 flex flex-col justify-between group hover:border-[var(--color-line-strong)] transition-all"
+            className="card-surface p-6 flex flex-col justify-between group hover:border-[var(--color-line-strong)] transition-all border hairline"
           >
             <div className="flex items-center justify-between text-[var(--color-ink-muted)]">
               <span className="font-mono text-[10px] uppercase tracking-[0.16em]">
@@ -121,7 +134,7 @@ export default async function DashboardPage() {
                 {leads.length}
               </div>
               {newLeadsCount > 0 && (
-                <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded-[3px] bg-amber-500/20 text-amber-500 border border-amber-500/30">
+                <span className="badge-status-new">
                   {newLeadsCount} New
                 </span>
               )}
@@ -133,7 +146,7 @@ export default async function DashboardPage() {
 
           <Link
             href="/cli-knowledge"
-            className="card-surface p-6 flex flex-col justify-between group hover:border-[var(--color-line-strong)] transition-all"
+            className="card-surface p-6 flex flex-col justify-between group hover:border-[var(--color-line-strong)] transition-all border hairline"
           >
             <div className="flex items-center justify-between text-[var(--color-ink-muted)]">
               <span className="font-mono text-[10px] uppercase tracking-[0.16em]">
@@ -155,7 +168,7 @@ export default async function DashboardPage() {
         {/* Two-Column Workspace Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Recent Inbound Leads */}
-          <div className="lg:col-span-8 card-surface overflow-hidden flex flex-col">
+          <div className="lg:col-span-8 card-surface overflow-hidden flex flex-col border hairline">
             <div className="p-6 border-b hairline flex items-center justify-between bg-[var(--color-card)]">
               <div>
                 <span className="eyebrow block">Intake Stream</span>
@@ -193,7 +206,7 @@ export default async function DashboardPage() {
                             · {lead.organization}
                           </span>
                         )}
-                        <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded-[3px] border hairline bg-[var(--color-card)] text-[var(--color-ink-muted)]">
+                        <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded-[3px] border hairline bg-[var(--color-surface)] text-[var(--color-ink-muted)]">
                           {lead.engagementTier}
                         </span>
                       </div>
@@ -211,17 +224,7 @@ export default async function DashboardPage() {
                     </div>
 
                     <div>
-                      <span
-                        className={`font-mono text-[9px] uppercase tracking-[0.14em] px-2 py-1 rounded-[3px] border ${
-                          lead.status === "new"
-                            ? "bg-amber-500/10 border-amber-500/30 text-amber-500"
-                            : lead.status === "contacted"
-                            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500"
-                            : "bg-[var(--color-card)] border-hairline text-[var(--color-ink-dim)]"
-                        }`}
-                      >
-                        {lead.status}
-                      </span>
+                      {getStatusBadge(lead.status)}
                     </div>
                   </div>
                 ))
@@ -231,7 +234,7 @@ export default async function DashboardPage() {
 
           {/* Quick Shortcuts & Preview */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="card-surface p-6">
+            <div className="card-surface p-6 border hairline">
               <span className="eyebrow block mb-3">Quick Navigation</span>
               <div className="space-y-2">
                 <Link
@@ -240,7 +243,7 @@ export default async function DashboardPage() {
                 >
                   <div className="flex items-center gap-3">
                     <Monitor size={14} className="text-[var(--color-accent)]" />
-                    <span className="font-mono text-xs uppercase tracking-[0.1em] text-[var(--color-ink)] font-medium">
+                    <span className="font-mono text-xs uppercase tracking-[0.1em] text-[var(--color-ink)] font-semibold">
                       Live Website Preview
                     </span>
                   </div>
@@ -289,18 +292,18 @@ export default async function DashboardPage() {
             </div>
 
             {/* Delivery & Revalidation Status */}
-            <div className="card-surface p-6">
+            <div className="card-surface p-6 border hairline">
               <span className="eyebrow block mb-3">Live Cache & Status</span>
               <div className="space-y-3 font-mono text-xs">
                 <div className="flex items-center justify-between py-1 border-b hairline">
                   <span className="text-[var(--color-ink-dim)]">Public API</span>
-                  <span className="text-[var(--color-ink)] truncate max-w-[150px]">
+                  <span className="text-[var(--color-ink)] font-semibold truncate max-w-[150px]">
                     /api/v1/content
                   </span>
                 </div>
                 <div className="flex items-center justify-between py-1 border-b hairline">
                   <span className="text-[var(--color-ink-dim)]">Theme System</span>
-                  <span className="text-[var(--color-ink)]">Dark + Light (Paper Cream)</span>
+                  <span className="text-[var(--color-ink)] font-semibold">Dark + Light (Paper Cream)</span>
                 </div>
                 <div className="flex items-center justify-between py-1">
                   <span className="text-[var(--color-ink-dim)]">Delivery</span>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Monitor,
   Tablet,
@@ -11,8 +11,12 @@ import {
   Sun,
   Moon,
   Maximize2,
+  Sparkles,
+  Layers,
+  Globe,
 } from "lucide-react";
 import { cn } from "@/core/lib/cn";
+import { SectionLivePreview } from "@/modules/content/ui/SectionLivePreview";
 
 type DeviceMode = "desktop" | "tablet" | "mobile";
 
@@ -34,11 +38,33 @@ export function LivePreviewFrame({
   defaultUrl?: string;
 }) {
   const [device, setDevice] = useState<DeviceMode>("desktop");
+  const [previewSource, setPreviewSource] = useState<"cms" | "remote">("cms");
   const [baseUrl, setBaseUrl] = useState(defaultUrl);
   const [currentPath, setCurrentPath] = useState(initialRoute);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [previewTheme, setPreviewTheme] = useState<"dark" | "light">("dark");
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // In-memory CMS sections for the interactive simulator
+  const [cmsSections, setCmsSections] = useState<Record<string, any>>({});
+  const [loadingCms, setLoadingCms] = useState(false);
+
+  useEffect(() => {
+    async function loadCmsContent() {
+      setLoadingCms(true);
+      try {
+        const res = await fetch("/api/v1/content?page=home");
+        const json = await res.json();
+        if (json.success && json.data) {
+          setCmsSections(json.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch CMS content for preview", err);
+      } finally {
+        setLoadingCms(false);
+      }
+    }
+    loadCmsContent();
+  }, [refreshKey]);
 
   const fullUrl = `${baseUrl.replace(/\/$/, "")}${currentPath}`;
 
@@ -69,79 +95,116 @@ export function LivePreviewFrame({
     >
       {/* Top Preview Control Bar */}
       <div className="h-14 border-b hairline px-4 flex flex-wrap items-center justify-between gap-3 bg-[var(--color-card)] select-none">
-        {/* Left: Device Switcher */}
-        <div className="flex items-center gap-1 bg-[var(--color-surface)] p-1 rounded-[4px] border hairline">
-          <button
-            type="button"
-            onClick={() => setDevice("desktop")}
-            className={cn(
-              "px-2.5 py-1 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.14em] flex items-center gap-1.5 transition-colors",
-              device === "desktop"
-                ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold"
-                : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
-            )}
-            title="Desktop (100%)"
-          >
-            <Monitor size={12} />
-            <span className="hidden sm:inline">Desktop</span>
-          </button>
+        {/* Left: Engine Mode & Device Switcher */}
+        <div className="flex items-center gap-2">
+          {/* Mode toggle */}
+          <div className="flex items-center bg-[var(--color-surface)] p-0.5 rounded-[4px] border hairline">
+            <button
+              type="button"
+              onClick={() => setPreviewSource("cms")}
+              className={cn(
+                "px-2.5 py-1 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.1em] flex items-center gap-1.5 transition-colors",
+                previewSource === "cms"
+                  ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold"
+                  : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+              )}
+            >
+              <Sparkles size={11} />
+              <span>CMS Live Render</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setPreviewSource("remote")}
+              className={cn(
+                "px-2.5 py-1 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.1em] flex items-center gap-1.5 transition-colors",
+                previewSource === "remote"
+                  ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold"
+                  : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+              )}
+            >
+              <Globe size={11} />
+              <span>Remote Site</span>
+            </button>
+          </div>
 
-          <button
-            type="button"
-            onClick={() => setDevice("tablet")}
-            className={cn(
-              "px-2.5 py-1 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.14em] flex items-center gap-1.5 transition-colors",
-              device === "tablet"
-                ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold"
-                : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
-            )}
-            title="Tablet (768px)"
-          >
-            <Tablet size={12} />
-            <span className="hidden sm:inline">Tablet</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setDevice("mobile")}
-            className={cn(
-              "px-2.5 py-1 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.14em] flex items-center gap-1.5 transition-colors",
-              device === "mobile"
-                ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold"
-                : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
-            )}
-            title="Mobile (390px)"
-          >
-            <Smartphone size={12} />
-            <span className="hidden sm:inline">Mobile</span>
-          </button>
+          {/* Device toggle (for remote iframe mode) */}
+          {previewSource === "remote" && (
+            <div className="flex items-center bg-[var(--color-surface)] p-0.5 rounded-[4px] border hairline">
+              <button
+                type="button"
+                onClick={() => setDevice("desktop")}
+                className={cn(
+                  "p-1.5 rounded-[3px] transition-colors",
+                  device === "desktop"
+                    ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
+                    : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                )}
+                title="Desktop"
+              >
+                <Monitor size={12} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setDevice("tablet")}
+                className={cn(
+                  "p-1.5 rounded-[3px] transition-colors",
+                  device === "tablet"
+                    ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
+                    : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                )}
+                title="Tablet"
+              >
+                <Tablet size={12} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setDevice("mobile")}
+                className={cn(
+                  "p-1.5 rounded-[3px] transition-colors",
+                  device === "mobile"
+                    ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
+                    : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                )}
+                title="Mobile"
+              >
+                <Smartphone size={12} />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Center: Route Switcher & URL Bar */}
-        <div className="flex items-center gap-2 flex-1 max-w-xl mx-2">
-          {/* Quick Route Selector */}
-          <select
-            value={currentPath}
-            onChange={(e) => setCurrentPath(e.target.value)}
-            className="bg-[var(--color-surface)] border hairline rounded-[4px] px-2.5 py-1.5 font-mono text-[11px] text-[var(--color-ink)] outline-none"
-          >
-            {PREVIEW_ROUTES.map((r) => (
-              <option key={r.path} value={r.path}>
-                {r.label} ({r.path})
-              </option>
-            ))}
-          </select>
+        {previewSource === "remote" && (
+          <div className="flex items-center gap-2 flex-1 max-w-xl mx-2">
+            <select
+              value={currentPath}
+              onChange={(e) => setCurrentPath(e.target.value)}
+              className="input-text w-auto py-1 font-mono text-[11px]"
+            >
+              {PREVIEW_ROUTES.map((r) => (
+                <option key={r.path} value={r.path}>
+                  {r.label} ({r.path})
+                </option>
+              ))}
+            </select>
 
-          {/* Interactive URL Bar */}
-          <div className="flex-1 flex items-center bg-[var(--color-surface)] border hairline rounded-[4px] px-3 py-1 font-mono text-[11px] text-[var(--color-ink)] overflow-hidden">
-            <span className="text-[var(--color-ink-dim)] truncate max-w-[130px] hidden md:inline">
-              {baseUrl}
-            </span>
-            <span className="text-[var(--color-accent)] font-semibold truncate">
-              {currentPath}
-            </span>
+            <div className="flex-1 flex items-center bg-[var(--color-surface)] border hairline rounded-[4px] px-3 py-1 font-mono text-[11px] text-[var(--color-ink)] overflow-hidden">
+              <span className="text-[var(--color-ink-dim)] truncate max-w-[130px] hidden md:inline">
+                {baseUrl}
+              </span>
+              <span className="text-[var(--color-accent)] font-semibold truncate">
+                {currentPath}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
+
+        {previewSource === "cms" && (
+          <div className="flex items-center gap-2 font-mono text-[10px] text-emerald-500 uppercase tracking-[0.14em]">
+            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Interactive Live Content Component Stack</span>
+          </div>
+        )}
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2">
@@ -151,7 +214,7 @@ export function LivePreviewFrame({
             className="p-1.5 text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] rounded-[4px] transition-colors"
             title="Refresh Preview"
           >
-            <RotateCw size={14} />
+            <RotateCw size={14} className={loadingCms ? "animate-spin" : ""} />
           </button>
 
           <button
@@ -164,7 +227,7 @@ export function LivePreviewFrame({
           </button>
 
           <a
-            href={fullUrl}
+            href={previewSource === "remote" ? fullUrl : "https://www.aideployed.io"}
             target="_blank"
             rel="noreferrer"
             className="btn-ghost h-8 px-2.5 text-[10px] inline-flex items-center gap-1"
@@ -176,65 +239,79 @@ export function LivePreviewFrame({
         </div>
       </div>
 
-      {/* Target Host Settings Strip */}
-      <div className="px-4 py-1.5 bg-[var(--color-surface)] border-b hairline flex items-center justify-between text-[10px] font-mono text-[var(--color-ink-dim)]">
-        <div className="flex items-center gap-2">
-          <span>Target Host:</span>
-          <button
-            type="button"
-            onClick={() => setBaseUrl("https://www.aideployed.io")}
-            className={cn(
-              "px-1.5 py-0.5 rounded-[2px] transition-colors",
-              baseUrl === "https://www.aideployed.io"
-                ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-medium"
-                : "hover:text-[var(--color-ink)]"
-            )}
-          >
-            Live (aideployed.io)
-          </button>
-          <span>/</span>
-          <button
-            type="button"
-            onClick={() => setBaseUrl("http://localhost:3000")}
-            className={cn(
-              "px-1.5 py-0.5 rounded-[2px] transition-colors",
-              baseUrl === "http://localhost:3000"
-                ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-medium"
-                : "hover:text-[var(--color-ink)]"
-            )}
-          >
-            Local (localhost:3000)
-          </button>
-        </div>
+      {/* Target Host Settings Strip (When in remote mode) */}
+      {previewSource === "remote" && (
+        <div className="px-4 py-1.5 bg-[var(--color-surface)] border-b hairline flex items-center justify-between text-[10px] font-mono text-[var(--color-ink-dim)]">
+          <div className="flex items-center gap-2">
+            <span>Target Host:</span>
+            <button
+              type="button"
+              onClick={() => setBaseUrl("https://www.aideployed.io")}
+              className={cn(
+                "px-1.5 py-0.5 rounded-[2px] transition-colors",
+                baseUrl === "https://www.aideployed.io"
+                  ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-medium"
+                  : "hover:text-[var(--color-ink)]"
+              )}
+            >
+              Live (aideployed.io)
+            </button>
+            <span>/</span>
+            <button
+              type="button"
+              onClick={() => setBaseUrl("http://localhost:3000")}
+              className={cn(
+                "px-1.5 py-0.5 rounded-[2px] transition-colors",
+                baseUrl === "http://localhost:3000"
+                  ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-medium"
+                  : "hover:text-[var(--color-ink)]"
+              )}
+            >
+              Local (localhost:3000)
+            </button>
+          </div>
 
-        <div className="flex items-center gap-2">
-          <span className="hidden sm:inline">Viewport:</span>
-          <span className="text-[var(--color-ink)] uppercase">
-            {device === "desktop"
-              ? "1440px Fluid"
-              : device === "tablet"
-              ? "768px iPad"
-              : "390px iPhone"}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="hidden sm:inline">Viewport:</span>
+            <span className="text-[var(--color-ink)] uppercase font-semibold">
+              {device === "desktop"
+                ? "1440px Fluid"
+                : device === "tablet"
+                ? "768px iPad"
+                : "390px iPhone"}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Iframe Viewport Container */}
-      <div className="flex-1 bg-[var(--color-bg)] p-4 overflow-auto flex items-center justify-center">
-        <div
-          className={cn(
-            "h-full w-full mx-auto transition-all duration-300 rounded-[6px] overflow-hidden shadow-2xl border hairline",
-            getDeviceWidth()
-          )}
-        >
-          <iframe
-            key={refreshKey}
-            src={fullUrl}
-            title="AI Deployed Live Website Preview"
-            className="w-full h-full bg-black border-0"
-            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-          />
-        </div>
+      {/* Viewport Canvas */}
+      <div className="flex-1 bg-[var(--color-bg)] overflow-auto flex items-stretch">
+        {previewSource === "cms" ? (
+          <div className="w-full h-full p-4 overflow-y-auto">
+            <SectionLivePreview
+              sectionKey="hero"
+              data={cmsSections["hero"] || {}}
+              allSectionsData={cmsSections}
+            />
+          </div>
+        ) : (
+          <div className="p-4 flex-1 flex items-center justify-center">
+            <div
+              className={cn(
+                "h-full w-full mx-auto transition-all duration-300 rounded-[6px] overflow-hidden shadow-2xl border hairline",
+                getDeviceWidth()
+              )}
+            >
+              <iframe
+                key={refreshKey}
+                src={fullUrl}
+                title="AI Deployed Live Website Preview"
+                className="w-full h-full bg-black border-0"
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

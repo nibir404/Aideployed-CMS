@@ -136,8 +136,8 @@ export function CliKnowledgeStudio({
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* Left Column: Topics List */}
       <div className="lg:col-span-3 space-y-3">
-        <div className="card-surface p-4">
-          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-400 mb-3 px-2">
+        <div className="card-surface p-3 border hairline">
+          <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--color-ink-dim)] mb-2 px-2">
             CLI Topics ({topics.length})
           </div>
           <div className="space-y-1">
@@ -151,13 +151,13 @@ export function CliKnowledgeStudio({
                   className={cn(
                     "w-full text-left px-3 py-2.5 rounded-[4px] font-mono text-xs uppercase tracking-[0.12em] flex items-center justify-between transition-all",
                     isSelected
-                      ? "bg-[#222222] text-white border border-neutral-600 font-medium"
-                      : "text-neutral-400 hover:text-neutral-200 hover:bg-[#151515]"
+                      ? "bg-[var(--color-card)] text-[var(--color-ink)] border hairline-strong font-semibold shadow-sm ring-1 ring-[var(--color-line-strong)]"
+                      : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)]"
                   )}
                 >
                   <span className="truncate">{t.topicId}</span>
-                  <span className="text-[10px] text-neutral-500 font-mono">
-                    {t.title.slice(0, 15)}...
+                  <span className="text-[10px] text-[var(--color-ink-dim)] font-mono">
+                    {t.title.slice(0, 14)}...
                   </span>
                 </button>
               );
@@ -167,18 +167,18 @@ export function CliKnowledgeStudio({
       </div>
 
       {/* Center Column: Topic Editor */}
-      <div className="lg:col-span-5 card-surface flex flex-col min-h-[600px]">
-        <div className="p-6 border-b hairline flex items-center justify-between bg-[#131313]">
+      <div className="lg:col-span-5 card-surface flex flex-col min-h-[600px] border hairline overflow-hidden">
+        <div className="p-5 border-b hairline flex items-center justify-between bg-[var(--color-card)]">
           <div>
             <span className="eyebrow block">CLI Knowledge Topic</span>
-            <h3 className="font-mono text-sm font-semibold uppercase tracking-[0.12em] text-white mt-1">
+            <h3 className="font-mono text-sm font-semibold uppercase tracking-[0.12em] text-[var(--color-ink)] mt-0.5">
               Editing: {activeTopic?.topicId}
             </h3>
           </div>
 
           <div className="flex items-center gap-2">
             {toast && (
-              <span className="flex items-center gap-1.5 font-mono text-[10px] text-emerald-400 bg-emerald-950/30 border border-emerald-500/30 px-2 py-1 rounded-[3px]">
+              <span className="badge-status-success">
                 <CheckCircle2 size={11} /> {toast}
               </span>
             )}
@@ -195,19 +195,19 @@ export function CliKnowledgeStudio({
 
         <div className="p-6 space-y-5 flex-1 overflow-y-auto">
           <div>
-            <label className="block font-mono text-[10px] uppercase text-neutral-400 mb-1">
+            <label className="label-text">
               Topic Title
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-[#161616] border hairline rounded-[4px] px-3.5 py-2 text-xs text-white focus:border-neutral-400 outline-none"
+              className="input-text font-medium"
             />
           </div>
 
           <div>
-            <label className="block font-mono text-[10px] uppercase text-neutral-400 mb-1">
+            <label className="label-text">
               Keywords (Comma-separated aliases)
             </label>
             <input
@@ -215,28 +215,28 @@ export function CliKnowledgeStudio({
               value={keywordsInput}
               onChange={(e) => setKeywordsInput(e.target.value)}
               placeholder="e.g. what, do, company, about, aideployed"
-              className="w-full bg-[#161616] border hairline rounded-[4px] px-3.5 py-2 text-xs font-mono text-white focus:border-neutral-400 outline-none"
+              className="input-text input-mono text-xs"
             />
-            <p className="mt-1 text-[10px] text-neutral-500 font-mono">
+            <p className="mt-1 text-[10px] text-[var(--color-ink-dim)] font-mono">
               Tokens that trigger this topic in the CLI matcher.
             </p>
           </div>
 
           <div>
-            <label className="block font-mono text-[10px] uppercase text-neutral-400 mb-1">
+            <label className="label-text">
               1-Line Teaser Summary
             </label>
             <textarea
               rows={2}
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
-              className="w-full bg-[#161616] border hairline rounded-[4px] px-3.5 py-2 text-xs text-neutral-300 focus:border-neutral-400 outline-none"
+              className="input-text leading-relaxed text-xs"
             />
           </div>
 
           <div className="space-y-3 pt-3 border-t hairline">
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-neutral-300">
+              <span className="label-text mb-0">
                 Editorial Bullet Facts ({facts.length})
               </span>
               <button
@@ -250,7 +250,7 @@ export function CliKnowledgeStudio({
             <div className="space-y-2">
               {facts.map((fact, idx) => (
                 <div key={idx} className="flex items-center gap-2">
-                  <span className="font-mono text-neutral-500 text-xs">·</span>
+                  <span className="font-mono text-[var(--color-ink-dim)] text-xs">·</span>
                   <input
                     type="text"
                     value={fact}
@@ -260,12 +260,12 @@ export function CliKnowledgeStudio({
                       setFacts(next);
                     }}
                     placeholder={`Fact #${idx + 1}`}
-                    className="flex-1 bg-[#161616] border hairline rounded-[4px] px-3 py-1.5 text-xs text-white outline-none"
+                    className="flex-1 input-text text-xs"
                   />
                   <button
                     type="button"
                     onClick={() => setFacts(facts.filter((_, i) => i !== idx))}
-                    className="p-1.5 text-neutral-500 hover:text-red-400"
+                    className="p-1.5 text-[var(--color-ink-dim)] hover:text-red-500 transition-colors"
                   >
                     <Trash2 size={12} />
                   </button>
@@ -277,22 +277,22 @@ export function CliKnowledgeStudio({
       </div>
 
       {/* Right Column: Interactive CLI Simulator */}
-      <div className="lg:col-span-4 card-surface flex flex-col min-h-[600px] bg-[#0c0c0c] border border-neutral-700/80">
-        <div className="p-4 border-b hairline flex items-center justify-between bg-[#111111]">
+      <div className="lg:col-span-4 card-surface flex flex-col min-h-[600px] border hairline overflow-hidden shadow-lg">
+        <div className="p-4 border-b hairline flex items-center justify-between bg-[var(--color-card)]">
           <div className="flex items-center gap-2">
-            <span className="inline-block size-2 bg-emerald-400 rounded-full animate-pulse" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-white font-medium">
+            <span className="inline-block size-2 bg-emerald-500 rounded-full animate-pulse" />
+            <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--color-ink)] font-semibold">
               CLI Simulator Sandbox
             </span>
           </div>
-          <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded-[2px] bg-neutral-800 text-neutral-400 border hairline">
+          <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded-[2px] bg-[var(--color-surface)] text-[var(--color-ink-dim)] border hairline">
             Offline Matcher
           </span>
         </div>
 
         {/* Query Input Box */}
-        <div className="p-4 border-b hairline bg-[#141414] space-y-2">
-          <label className="block font-mono text-[9px] uppercase tracking-[0.16em] text-neutral-400">
+        <div className="p-4 border-b hairline bg-[var(--color-surface)] space-y-2.5">
+          <label className="label-text mb-0">
             Type test user prompt
           </label>
           <div className="flex gap-2">
@@ -304,7 +304,7 @@ export function CliKnowledgeStudio({
                 if (e.key === "Enter") runSimulation(simQuery);
               }}
               placeholder="e.g. how does governance work"
-              className="flex-1 bg-[#0a0a0a] border hairline rounded-[4px] px-3 py-1.5 text-xs font-mono text-white outline-none focus:border-neutral-400"
+              className="flex-1 input-text input-mono text-xs py-1.5"
             />
             <button
               onClick={() => runSimulation(simQuery)}
@@ -329,7 +329,7 @@ export function CliKnowledgeStudio({
                   setSimQuery(q);
                   runSimulation(q);
                 }}
-                className="font-mono text-[9px] px-2 py-0.5 rounded-[3px] border hairline bg-[#181818] text-neutral-400 hover:text-white hover:border-neutral-500 transition-colors"
+                className="font-mono text-[9px] px-2 py-0.5 rounded-[3px] border hairline bg-[var(--color-card)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:border-[var(--color-line-strong)] transition-colors"
               >
                 ${q}
               </button>
@@ -338,28 +338,28 @@ export function CliKnowledgeStudio({
         </div>
 
         {/* Terminal Output Screen */}
-        <div className="p-4 flex-1 font-mono text-xs overflow-y-auto space-y-3">
+        <div className="p-4 flex-1 font-mono text-xs overflow-y-auto space-y-3 bg-[var(--color-surface)]">
           {simResult ? (
             <div className="space-y-3 animate-fade-in">
-              <div className="flex items-center justify-between text-[10px] border-b hairline pb-2 text-neutral-400">
+              <div className="flex items-center justify-between text-[10px] border-b hairline pb-2 text-[var(--color-ink-dim)]">
                 <span>
                   Match:{" "}
-                  <strong className="text-white">
+                  <strong className="text-[var(--color-ink)]">
                     {simResult.matchedTopic?.topicId || "No Match (Fallback)"}
                   </strong>
                 </span>
                 <span>
-                  Score: <strong className="text-emerald-400">{simResult.score}</strong>
+                  Score: <strong className="text-emerald-500 font-bold">{simResult.score}</strong>
                 </span>
               </div>
 
-              <div className="bg-[#121212] p-3 rounded-[4px] border hairline text-neutral-300 text-[11px] leading-relaxed whitespace-pre-wrap font-mono">
+              <div className="code-container p-3.5 text-xs leading-relaxed whitespace-pre-wrap">
                 {simResult.composedOutput}
               </div>
             </div>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-center p-6 text-neutral-500 font-mono text-[11px]">
-              <Terminal size={24} className="mb-2 text-neutral-600" />
+            <div className="h-full flex flex-col items-center justify-center text-center p-6 text-[var(--color-ink-dim)] font-mono text-[11px]">
+              <Terminal size={24} className="mb-2 text-[var(--color-ink-dim)]" />
               <span>Type a query and press Test to simulate the CLI</span>
             </div>
           )}
