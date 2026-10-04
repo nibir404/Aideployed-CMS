@@ -41,3 +41,7 @@ yarn-error.log*
 *.db
 *.db-journal
 dev.db
+
+# playwright
+/test-results/
+/playwright-report/

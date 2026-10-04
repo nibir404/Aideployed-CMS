@@ -439,6 +439,7 @@ export function VisualPageBuilder({
         {/* ======================================================== */}
         <main className="flex-1 bg-[var(--color-bg)] overflow-y-auto p-3 sm:p-6 flex flex-col items-center min-w-0">
           <div
+            data-testid="canvas-viewport-container"
             className={cn(
               "w-full transition-all duration-300 rounded-[8px] overflow-hidden border hairline shadow-xl relative",
               canvasTheme === "light"

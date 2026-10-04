@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, createContext, useContext } from "react";
 import {
   ArrowUpRight,
   ShieldCheck,
@@ -29,6 +29,56 @@ interface VisualPageCanvasProps {
   onSelectSection?: (sectionKey: string) => void;
 }
 
+const SectionContext = createContext<{
+  isEditMode: boolean;
+  selectedSectionKey?: string;
+  onSelectSection?: (sectionKey: string) => void;
+}>({
+  isEditMode: true,
+});
+
+function SectionContainer({
+  sectionKey,
+  title,
+  children,
+  className = "",
+}: {
+  sectionKey: string;
+  title: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const { isEditMode, selectedSectionKey, onSelectSection } = useContext(SectionContext);
+  const isSelected = selectedSectionKey === sectionKey;
+
+  return (
+    <section
+      id={sectionKey}
+      onClick={() => onSelectSection?.(sectionKey)}
+      className={cn(
+        "relative transition-all border-b hairline group/sec",
+        isEditMode && "hover:outline hover:outline-1 hover:outline-cyan-500/30",
+        isSelected && isEditMode && "outline outline-2 outline-cyan-500/70 bg-cyan-500/[0.01]",
+        className
+      )}
+    >
+      {isEditMode && (
+        <div
+          className={cn(
+            "absolute top-2 right-4 z-20 font-mono text-[9px] uppercase tracking-[0.14em] px-2 py-0.5 rounded-[3px] backdrop-blur-md shadow-xs flex items-center gap-1.5 transition-all pointer-events-none",
+            isSelected
+              ? "bg-cyan-600 text-white opacity-100 font-semibold"
+              : "bg-neutral-900/80 text-neutral-300 opacity-0 group-hover/sec:opacity-100"
+          )}
+        >
+          <span>{title}</span>
+        </div>
+      )}
+      {children}
+    </section>
+  );
+}
+
 export function VisualPageCanvas({
   pageSlug,
   sectionsData,
@@ -37,49 +87,25 @@ export function VisualPageCanvas({
   selectedSectionKey,
   onSelectSection,
 }: VisualPageCanvasProps) {
+  return (
+    <SectionContext.Provider value={{ isEditMode, selectedSectionKey, onSelectSection }}>
+      <VisualPageCanvasBody
+        pageSlug={pageSlug}
+        sectionsData={sectionsData}
+        onUpdateField={onUpdateField}
+        isEditMode={isEditMode}
+      />
+    </SectionContext.Provider>
+  );
+}
+
+function VisualPageCanvasBody({
+  pageSlug,
+  sectionsData,
+  onUpdateField,
+  isEditMode,
+}: Omit<VisualPageCanvasProps, "selectedSectionKey" | "onSelectSection">) {
   const [activeDemoPhase, setActiveDemoPhase] = useState(1);
-
-  // Helper for section container wrapper with Webflow-style boundaries
-  const SectionContainer = ({
-    sectionKey,
-    title,
-    children,
-    className = "",
-  }: {
-    sectionKey: string;
-    title: string;
-    children: React.ReactNode;
-    className?: string;
-  }) => {
-    const isSelected = selectedSectionKey === sectionKey;
-
-    return (
-      <section
-        id={sectionKey}
-        onClick={() => onSelectSection?.(sectionKey)}
-        className={cn(
-          "relative transition-all border-b hairline group/sec",
-          isEditMode && "hover:outline hover:outline-1 hover:outline-cyan-500/30",
-          isSelected && isEditMode && "outline outline-2 outline-cyan-500/70 bg-cyan-500/[0.01]",
-          className
-        )}
-      >
-        {isEditMode && (
-          <div
-            className={cn(
-              "absolute top-2 right-4 z-20 font-mono text-[9px] uppercase tracking-[0.14em] px-2 py-0.5 rounded-[3px] backdrop-blur-md shadow-xs flex items-center gap-1.5 transition-all pointer-events-none",
-              isSelected
-                ? "bg-cyan-600 text-white opacity-100 font-semibold"
-                : "bg-neutral-900/80 text-neutral-300 opacity-0 group-hover/sec:opacity-100"
-            )}
-          >
-            <span>{title}</span>
-          </div>
-        )}
-        {children}
-      </section>
-    );
-  };
 
   /* ------------------------------------------------------------- */
   /*                      HOMEPAGE SECTIONS                        */

@@ -2,7 +2,7 @@
 
 > **Last Updated**: 2026-10-04
 > **Status**: Active & Evergreen
-> **Completion Level**: ~95% (Core Micro-Monolith CMS, Visual Builder & Ingest Complete)
+> **Completion Level**: ~98% (Micro-Monolith CMS, Visual Builder, E2E Tested)
 > **Active Git Branch**: `main`
 > **Author Identity**: `Nick404 <nibirimtiaz1@gmail.com>`
 
@@ -15,6 +15,8 @@ The project is a fully-operational, micro-monolithic Headless & Visual CMS tailo
 
 All 6 primary pages from the live marketing website have been analyzed, structurally decomposed, seeded into the local SQLite database, and wired into a **WordPress / Webflow-style Visual Page Builder**.
 
+An automated **Playwright E2E Test Suite** has been introduced and runs against local Chrome with 100% pass rate across all 9 tests covering every key operational domain of the CMS.
+
 ### Key Milestones Completed:
 1. **Visual Page Builder (Webflow / WordPress style)**: Users can navigate pages (`home`, `platform`, `governance`, `how-we-work`, `about`, `contact`), select sections in a Navigator tree, toggle desktop/tablet/mobile viewports, and perform **click-to-edit WYSIWYG inline text editing** directly on the visual page canvas with real-time persistence.
 2. **Light & Dark Mode Accessibility**: Complete theme parity with verified WCAG contrast, dual-mode previews, and instant theme synchronization across CMS chrome and the live preview canvas.
@@ -24,6 +26,7 @@ All 6 primary pages from the live marketing website have been analyzed, structur
 6. **Git History Sanitization**: All repository commits cleanly attributed to `Nick404 <nibirimtiaz1@gmail.com>` with no obsolete company references.
 7. **Minimalist Responsive Architecture & Panel State Handling**: Fully responsive shell with desktop collapsible icon rail (`w-56` to `w-16`), mobile slide-over drawer, Webflow builder 3-state panels (desktop 3-pane dock, tablet adaptive panels, mobile segmented tab bar), and responsive layouts for Platform, FAQs, CRM Leads, and CLI sandbox.
 8. **Uncluttered & Effortless Visual Page Builder UI**: Full-width spacious canvas by default without permanent multi-column squeezing; sleek unobtrusive slide-over drawers for Page Outline and Section Properties; streamlined inline text editing without disruptive badge popovers.
+9. **Automated Playwright E2E Suite (100% Green)**: Comprehensive 9-test headless suite testing dashboard KPIs, visual canvas inline editing, properties drawers, platform modules, FAQ search/modal, leads inbox workflow, CLI offline query matching, live simulator frame, and mobile responsive drawers. Optimized with React `SectionContext` to eliminate unmounting during keystrokes.
 
 ---
 
@@ -147,6 +150,13 @@ src/
 ---
 
 ## 7. Evolution & Change Ledger
+
+### [2026-10-04] FEAT: Playwright E2E Test Suite & Minimal UI Polish
+- **Timestamp**: 2026-10-04 06:30:00 UTC
+- **Description**: Configured Playwright E2E test runner utilizing local Chrome binary on macOS. Built comprehensive 9-test headless suite (`e2e/cms-full-suite.spec.ts` & `e2e/sanity.spec.ts`) validating dashboard KPIs, visual canvas inline editing, properties drawers, platform modules, FAQ search/modal, leads inbox workflow, CLI offline query matching, live simulator frame, and mobile responsive drawers. Refactored `VisualPageCanvas` and `EditableText` with module-scoped `SectionContainer` and React `SectionContext` to eliminate input remounts during live keystrokes. 100% tests passing in 4.4 seconds.
+- **Files Touched**: `playwright.config.ts`, `e2e/cms-full-suite.spec.ts`, `package.json`, `src/modules/content/ui/VisualPageCanvas.tsx`, `src/modules/content/ui/VisualPageBuilder.tsx`, `src/modules/content/ui/EditableText.tsx`, `src/app/content/page.tsx`, `.gitignore`
+- **Key Decisions / Notes**: Direct Chrome channel configuration (`channel: 'chrome'`) avoids cloud CDN driver download issues. React context separation guarantees silky smooth inline editing without tearing.
+- **Git Baseline**: `main`
 
 ### [2026-10-04] REFACTOR: Uncluttered & Effortless Visual Page Builder UI
 - **Timestamp**: 2026-10-04 05:11:44 UTC

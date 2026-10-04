@@ -30,8 +30,10 @@ export function EditableText({
 
   // Sync state if prop changes externally
   useEffect(() => {
-    setCurrentText(value || "");
-  }, [value]);
+    if (!isEditing) {
+      setCurrentText(value || "");
+    }
+  }, [value, isEditing]);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
