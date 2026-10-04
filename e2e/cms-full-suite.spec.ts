@@ -69,7 +69,8 @@ test.describe("AI Deployed CMS - Full E2E Test Suite", () => {
       await editableHeadline.click();
       const input = canvas.locator("h1 input, h1 textarea").first();
       await expect(input).toBeVisible();
-      await input.fill("Embed with your high-assurance team.");
+      const dynamicHeadline = `Embed with your team ${Date.now()}`;
+      await input.fill(dynamicHeadline);
       await input.press("Enter");
       // Check that unsaved badge appears
       await expect(page.locator("text=Unsaved")).toBeVisible();

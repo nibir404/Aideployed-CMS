@@ -98,12 +98,12 @@ export function LivePreviewFrame({
         {/* Left: Engine Mode & Device Switcher */}
         <div className="flex items-center gap-2">
           {/* Mode toggle */}
-          <div className="flex items-center bg-[var(--color-surface)] p-0.5 rounded-[4px] border hairline">
+          <div className="h-8 flex items-center bg-[var(--color-surface)] p-0.5 rounded-[4px] border hairline">
             <button
               type="button"
               onClick={() => setPreviewSource("cms")}
               className={cn(
-                "px-2.5 py-1 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.1em] flex items-center gap-1.5 transition-colors",
+                "h-full px-2.5 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.1em] flex items-center gap-1.5 transition-colors",
                 previewSource === "cms"
                   ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold"
                   : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
@@ -116,7 +116,7 @@ export function LivePreviewFrame({
               type="button"
               onClick={() => setPreviewSource("remote")}
               className={cn(
-                "px-2.5 py-1 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.1em] flex items-center gap-1.5 transition-colors",
+                "h-full px-2.5 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.1em] flex items-center gap-1.5 transition-colors",
                 previewSource === "remote"
                   ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold"
                   : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
@@ -129,12 +129,12 @@ export function LivePreviewFrame({
 
           {/* Device toggle (for remote iframe mode) */}
           {previewSource === "remote" && (
-            <div className="flex items-center bg-[var(--color-surface)] p-0.5 rounded-[4px] border hairline">
+            <div className="h-8 flex items-center bg-[var(--color-surface)] p-0.5 rounded-[4px] border hairline">
               <button
                 type="button"
                 onClick={() => setDevice("desktop")}
                 className={cn(
-                  "p-1.5 rounded-[3px] transition-colors",
+                  "h-full px-2 rounded-[3px] flex items-center justify-center transition-colors",
                   device === "desktop"
                     ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
                     : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
@@ -143,101 +143,101 @@ export function LivePreviewFrame({
               >
                 <Monitor size={12} />
               </button>
-              <button
-                type="button"
-                onClick={() => setDevice("tablet")}
-                className={cn(
-                  "p-1.5 rounded-[3px] transition-colors",
-                  device === "tablet"
-                    ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
-                    : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
-                )}
-                title="Tablet"
+                <button
+                  type="button"
+                  onClick={() => setDevice("tablet")}
+                  className={cn(
+                    "h-full px-2 rounded-[3px] flex items-center justify-center transition-colors",
+                    device === "tablet"
+                      ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
+                      : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                  )}
+                  title="Tablet"
+                >
+                  <Tablet size={12} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDevice("mobile")}
+                  className={cn(
+                    "h-full px-2 rounded-[3px] flex items-center justify-center transition-colors",
+                    device === "mobile"
+                      ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
+                      : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                  )}
+                  title="Mobile"
+                >
+                  <Smartphone size={12} />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Center: Route Switcher & URL Bar */}
+          {previewSource === "remote" && (
+            <div className="flex items-center gap-2 flex-1 max-w-xl mx-2">
+              <select
+                value={currentPath}
+                onChange={(e) => setCurrentPath(e.target.value)}
+                className="input-text h-8 w-auto py-0 font-mono text-[11px]"
               >
-                <Tablet size={12} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setDevice("mobile")}
-                className={cn(
-                  "p-1.5 rounded-[3px] transition-colors",
-                  device === "mobile"
-                    ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
-                    : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
-                )}
-                title="Mobile"
-              >
-                <Smartphone size={12} />
-              </button>
+                {PREVIEW_ROUTES.map((r) => (
+                  <option key={r.path} value={r.path}>
+                    {r.label} ({r.path})
+                  </option>
+                ))}
+              </select>
+
+              <div className="flex-1 flex items-center bg-[var(--color-surface)] border hairline rounded-[4px] px-3 h-8 font-mono text-[11px] text-[var(--color-ink)] overflow-hidden">
+                <span className="text-[var(--color-ink-dim)] truncate max-w-[130px] hidden md:inline">
+                  {baseUrl}
+                </span>
+                <span className="text-[var(--color-accent)] font-semibold truncate">
+                  {currentPath}
+                </span>
+              </div>
             </div>
           )}
-        </div>
 
-        {/* Center: Route Switcher & URL Bar */}
-        {previewSource === "remote" && (
-          <div className="flex items-center gap-2 flex-1 max-w-xl mx-2">
-            <select
-              value={currentPath}
-              onChange={(e) => setCurrentPath(e.target.value)}
-              className="input-text w-auto py-1 font-mono text-[11px]"
-            >
-              {PREVIEW_ROUTES.map((r) => (
-                <option key={r.path} value={r.path}>
-                  {r.label} ({r.path})
-                </option>
-              ))}
-            </select>
-
-            <div className="flex-1 flex items-center bg-[var(--color-surface)] border hairline rounded-[4px] px-3 py-1 font-mono text-[11px] text-[var(--color-ink)] overflow-hidden">
-              <span className="text-[var(--color-ink-dim)] truncate max-w-[130px] hidden md:inline">
-                {baseUrl}
-              </span>
-              <span className="text-[var(--color-accent)] font-semibold truncate">
-                {currentPath}
-              </span>
+          {previewSource === "cms" && (
+            <div className="flex items-center gap-2 font-mono text-[10px] text-emerald-500 uppercase tracking-[0.14em]">
+              <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Interactive Live Content Component Stack</span>
             </div>
+          )}
+
+          {/* Right: Actions */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleRefresh}
+              className="btn-icon h-8 w-8 text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+              title="Refresh Preview"
+            >
+              <RotateCw size={13} className={loadingCms ? "animate-spin" : ""} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="btn-icon h-8 w-8 text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hidden sm:inline-flex"
+              title="Toggle Fullscreen"
+            >
+              <Maximize2 size={13} />
+            </button>
+
+            <a
+              href={previewSource === "remote" ? fullUrl : "https://www.aideployed.io"}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-ghost h-8 px-2.5 text-[10px] inline-flex items-center gap-1"
+              title="Open in new window"
+            >
+              <span>External</span>
+              <ExternalLink size={11} />
+            </a>
           </div>
-        )}
-
-        {previewSource === "cms" && (
-          <div className="flex items-center gap-2 font-mono text-[10px] text-emerald-500 uppercase tracking-[0.14em]">
-            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Interactive Live Content Component Stack</span>
-          </div>
-        )}
-
-        {/* Right: Actions */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleRefresh}
-            className="p-1.5 text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] rounded-[4px] transition-colors"
-            title="Refresh Preview"
-          >
-            <RotateCw size={14} className={loadingCms ? "animate-spin" : ""} />
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-1.5 text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] rounded-[4px] transition-colors hidden sm:inline-block"
-            title="Toggle Fullscreen"
-          >
-            <Maximize2 size={14} />
-          </button>
-
-          <a
-            href={previewSource === "remote" ? fullUrl : "https://www.aideployed.io"}
-            target="_blank"
-            rel="noreferrer"
-            className="btn-ghost h-8 px-2.5 text-[10px] inline-flex items-center gap-1"
-            title="Open in new window"
-          >
-            <span>External</span>
-            <ExternalLink size={11} />
-          </a>
         </div>
-      </div>
 
       {/* Target Host Settings Strip (When in remote mode) */}
       {previewSource === "remote" && (

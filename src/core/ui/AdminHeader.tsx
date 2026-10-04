@@ -49,20 +49,20 @@ export function AdminHeader() {
         <button
           type="button"
           onClick={toggleSidebarMobile}
-          className="lg:hidden p-1.5 -ml-1 rounded-[4px] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] transition-colors"
+          className="lg:hidden btn-icon h-8 w-8 -ml-1 text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
           aria-label="Open Navigation Menu"
         >
-          <Menu size={18} />
+          <Menu size={16} />
         </button>
 
         {/* Desktop Sidebar Toggle */}
         <button
           type="button"
           onClick={toggleSidebarDesktop}
-          className="hidden lg:flex p-1.5 -ml-1 rounded-[4px] text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] transition-colors"
+          className="hidden lg:inline-flex btn-icon h-8 w-8 -ml-1 text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]"
           title={sidebarCollapsedDesktop ? "Expand Sidebar" : "Collapse Sidebar"}
         >
-          {sidebarCollapsedDesktop ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+          {sidebarCollapsedDesktop ? <PanelLeftOpen size={15} /> : <PanelLeftClose size={15} />}
         </button>
 
         {/* Breadcrumb Indicator */}

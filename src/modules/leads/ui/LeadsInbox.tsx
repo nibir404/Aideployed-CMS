@@ -160,12 +160,12 @@ export function LeadsInbox({ initialLeads }: { initialLeads: LeadEntity[] }) {
 
         <div className="flex items-center gap-2">
           {/* Mobile View Toggle */}
-          <div className="lg:hidden flex items-center bg-[var(--color-surface)] p-0.5 rounded-[4px] border hairline">
+          <div className="lg:hidden h-8 flex items-center bg-[var(--color-surface)] p-0.5 rounded-[4px] border hairline">
             <button
               type="button"
               onClick={() => setMobileView("list")}
               className={cn(
-                "px-2 py-1 font-mono text-[9px] uppercase tracking-[0.1em] rounded-[3px] transition-colors",
+                "h-full px-2.5 font-mono text-[9px] uppercase tracking-[0.1em] rounded-[3px] flex items-center transition-colors",
                 mobileView === "list"
                   ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold shadow-xs"
                   : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
@@ -177,7 +177,7 @@ export function LeadsInbox({ initialLeads }: { initialLeads: LeadEntity[] }) {
               type="button"
               onClick={() => setMobileView("detail")}
               className={cn(
-                "px-2 py-1 font-mono text-[9px] uppercase tracking-[0.1em] rounded-[3px] transition-colors",
+                "h-full px-2.5 font-mono text-[9px] uppercase tracking-[0.1em] rounded-[3px] flex items-center transition-colors",
                 mobileView === "detail"
                   ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold shadow-xs"
                   : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
@@ -190,7 +190,7 @@ export function LeadsInbox({ initialLeads }: { initialLeads: LeadEntity[] }) {
           <a
             href="/api/admin/leads/export"
             download
-            className="btn-ghost h-7 sm:h-8 px-2.5 sm:px-3 text-[10px] inline-flex items-center gap-1.5"
+            className="btn-ghost h-8 px-3 text-[10px] inline-flex items-center gap-1.5"
           >
             <Download size={11} />
             <span className="hidden sm:inline">Export CSV</span>
@@ -343,7 +343,7 @@ export function LeadsInbox({ initialLeads }: { initialLeads: LeadEntity[] }) {
                   <button
                     onClick={handleSaveLead}
                     disabled={saving}
-                    className="btn-pill h-7 sm:h-8 px-3 text-[10px] ml-auto"
+                    className="btn-pill h-8 px-3.5 text-[10px] ml-auto"
                   >
                     {saving ? "Saving..." : "Save Triage Notes"}
                   </button>

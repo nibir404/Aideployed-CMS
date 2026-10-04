@@ -150,7 +150,7 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
                 type="button"
                 onClick={() => setCategoryFilter(cat)}
                 className={cn(
-                  "px-2.5 py-1 rounded-[3px] font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] shrink-0 transition-colors",
+                  "h-8 px-3 rounded-[4px] font-mono text-[10px] uppercase tracking-[0.1em] shrink-0 transition-colors inline-flex items-center",
                   categoryFilter === cat
                     ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold shadow-xs"
                     : "bg-[var(--color-surface)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] border hairline"
@@ -170,7 +170,7 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
           )}
           <button
             onClick={openCreateModal}
-            className="btn-pill h-7 sm:h-8 px-3 text-[10px] flex items-center gap-1.5"
+            className="btn-pill h-8 px-3.5 text-[10px] flex items-center gap-1.5"
           >
             <Plus size={11} />
             <span>Add FAQ</span>
@@ -211,17 +211,17 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
                 />
               </div>
 
-              <div className="pt-2.5 border-t hairline flex items-center justify-end gap-1">
+              <div className="pt-2.5 border-t hairline flex items-center justify-end gap-1.5">
                 <button
                   onClick={() => openEditModal(faq)}
-                  className="p-1.5 text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] rounded-[3px] transition-colors"
+                  className="btn-icon h-8 w-8 text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] transition-colors"
                   title="Edit FAQ"
                 >
                   <Edit2 size={12} />
                 </button>
                 <button
                   onClick={() => handleDelete(faq.id)}
-                  className="p-1.5 text-[var(--color-ink-dim)] hover:text-red-500 hover:bg-red-500/10 rounded-[3px] transition-colors"
+                  className="btn-icon h-8 w-8 text-[var(--color-ink-dim)] hover:text-red-500 hover:border-red-500/30 transition-colors"
                   title="Delete FAQ"
                 >
                   <Trash2 size={12} />
@@ -288,14 +288,14 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="btn-ghost h-7 sm:h-8 px-3 text-[10px]"
+                  className="btn-ghost h-8 px-3.5 text-[10px]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="btn-pill h-7 sm:h-8 px-3.5 text-[10px]"
+                  className="btn-pill h-8 px-4 text-[10px]"
                 >
                   {saving ? "Saving..." : editingFaq ? "Update FAQ" : "Create FAQ"}
                 </button>

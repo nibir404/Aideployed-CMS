@@ -242,9 +242,9 @@ export function CliKnowledgeStudio({
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="btn-pill h-7 sm:h-8 px-3 text-[10px] inline-flex items-center gap-1.5"
+                className="btn-pill h-8 px-3.5 text-[10px] inline-flex items-center gap-1.5"
               >
-                <Save size={11} className={saving ? "animate-spin" : ""} />
+                <Save size={12} className={saving ? "animate-spin" : ""} />
                 <span>{saving ? "Saving" : "Save Topic"}</span>
               </button>
             </div>
@@ -293,9 +293,9 @@ export function CliKnowledgeStudio({
                 <button
                   type="button"
                   onClick={() => setFacts([...facts, ""])}
-                  className="btn-ghost h-6 px-2 text-[9px] inline-flex items-center gap-1"
+                  className="btn-ghost h-8 px-2.5 text-[10px] inline-flex items-center gap-1"
                 >
-                  <Plus size={10} /> Add Fact
+                  <Plus size={11} /> Add Fact
                 </button>
               </div>
               <div className="space-y-2">
@@ -316,7 +316,8 @@ export function CliKnowledgeStudio({
                     <button
                       type="button"
                       onClick={() => setFacts(facts.filter((_, i) => i !== idx))}
-                      className="p-1.5 text-[var(--color-ink-dim)] hover:text-red-500 transition-colors"
+                      className="btn-icon h-8 w-8 text-[var(--color-ink-dim)] hover:text-red-500 hover:border-red-500/30 transition-colors"
+                      title="Remove Fact"
                     >
                       <Trash2 size={12} />
                     </button>
@@ -358,12 +359,12 @@ export function CliKnowledgeStudio({
                   if (e.key === "Enter") runSimulation(simQuery);
                 }}
                 placeholder="e.g. how does governance work"
-                className="flex-1 input-text input-mono text-xs py-1.5"
+                className="flex-1 input-text input-mono text-xs py-0"
               />
               <button
                 onClick={() => runSimulation(simQuery)}
                 disabled={simLoading}
-                className="btn-pill h-7 sm:h-8 px-2.5 sm:px-3 text-[10px] inline-flex items-center gap-1"
+                className="btn-pill h-8 px-3 text-[10px] inline-flex items-center gap-1"
               >
                 <Play size={10} />
                 <span>Test</span>

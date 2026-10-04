@@ -191,9 +191,9 @@ export function VisualPageBuilder({
             type="button"
             onClick={() => setIsOutlineOpen(!isOutlineOpen)}
             className={cn(
-              "px-2.5 py-1.5 rounded-[5px] border hairline text-xs font-mono uppercase tracking-[0.08em] flex items-center gap-1.5 transition-colors",
+              "btn-ghost h-8 px-2.5 text-xs flex items-center gap-1.5",
               isOutlineOpen
-                ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold"
+                ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold border-transparent"
                 : "bg-[var(--color-surface)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
             )}
             title="Toggle Sections Outline Drawer"
@@ -208,7 +208,7 @@ export function VisualPageBuilder({
             <select
               value={selectedPageSlug}
               onChange={(e) => setSelectedPageSlug(e.target.value)}
-              className="appearance-none input-text py-1.5 pl-3 pr-7 font-mono text-xs font-semibold bg-[var(--color-surface)] border hairline rounded-[5px] cursor-pointer"
+              className="appearance-none input-text h-8 pl-3 pr-7 font-mono text-xs font-semibold bg-[var(--color-surface)] cursor-pointer"
             >
               {pages.map((p) => (
                 <option key={p.slug} value={p.slug}>
@@ -224,7 +224,7 @@ export function VisualPageBuilder({
             <select
               value={selectedSectionKey}
               onChange={(e) => handleScrollToSection(e.target.value)}
-              className="appearance-none input-text py-1.5 pl-2.5 pr-6 font-mono text-[11px] bg-[var(--color-surface)] border hairline rounded-[5px] cursor-pointer text-[var(--color-ink-muted)]"
+              className="appearance-none input-text h-8 pl-2.5 pr-6 font-mono text-[11px] bg-[var(--color-surface)] cursor-pointer text-[var(--color-ink-muted)]"
             >
               {(activePage?.sections || []).map((s) => (
                 <option key={s.sectionKey} value={s.sectionKey}>
@@ -239,12 +239,12 @@ export function VisualPageBuilder({
         {/* Center: Device & Mode Controls */}
         <div className="flex items-center gap-2">
           {/* Edit Mode Toggle */}
-          <div className="flex items-center bg-[var(--color-surface)] p-0.5 rounded-[5px] border hairline">
+          <div className="h-8 flex items-center bg-[var(--color-surface)] p-0.5 rounded-[4px] border hairline">
             <button
               type="button"
               onClick={() => setIsEditMode(true)}
               className={cn(
-                "px-2.5 py-1 rounded-[4px] font-mono text-[10px] uppercase tracking-[0.1em] flex items-center gap-1 transition-colors",
+                "h-full px-2.5 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.1em] flex items-center gap-1 transition-colors",
                 isEditMode
                   ? "bg-cyan-600 text-white font-semibold shadow-xs"
                   : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
@@ -258,7 +258,7 @@ export function VisualPageBuilder({
               type="button"
               onClick={() => setIsEditMode(false)}
               className={cn(
-                "px-2.5 py-1 rounded-[4px] font-mono text-[10px] uppercase tracking-[0.1em] flex items-center gap-1 transition-colors",
+                "h-full px-2.5 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.1em] flex items-center gap-1 transition-colors",
                 !isEditMode
                   ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold shadow-xs"
                   : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
@@ -271,12 +271,12 @@ export function VisualPageBuilder({
           </div>
 
           {/* Desktop vs Mobile Viewport */}
-          <div className="hidden sm:flex items-center bg-[var(--color-surface)] p-0.5 rounded-[5px] border hairline">
+          <div className="hidden sm:flex h-8 items-center bg-[var(--color-surface)] p-0.5 rounded-[4px] border hairline">
             <button
               type="button"
               onClick={() => setDevice("desktop")}
               className={cn(
-                "p-1.5 rounded-[4px] transition-colors",
+                "h-full px-2 rounded-[3px] flex items-center justify-center transition-colors",
                 device === "desktop"
                   ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
                   : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
@@ -289,7 +289,7 @@ export function VisualPageBuilder({
               type="button"
               onClick={() => setDevice("mobile")}
               className={cn(
-                "p-1.5 rounded-[4px] transition-colors",
+                "h-full px-2 rounded-[3px] flex items-center justify-center transition-colors",
                 device === "mobile"
                   ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
                   : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
@@ -304,7 +304,7 @@ export function VisualPageBuilder({
           <button
             type="button"
             onClick={() => setCanvasTheme(canvasTheme === "dark" ? "light" : "dark")}
-            className="p-1.5 rounded-[5px] border hairline bg-[var(--color-surface)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors"
+            className="btn-icon h-8 w-8 bg-[var(--color-surface)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
             title={`Switch preview theme (current: ${canvasTheme})`}
           >
             {canvasTheme === "dark" ? <Moon size={13} /> : <Sun size={13} />}
@@ -341,9 +341,9 @@ export function VisualPageBuilder({
             type="button"
             onClick={() => setIsInspectorOpen(!isInspectorOpen)}
             className={cn(
-              "p-1.5 rounded-[5px] border hairline transition-all",
+              "btn-icon h-8 w-8 transition-all",
               isInspectorOpen
-                ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
+                ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] border-transparent"
                 : "bg-[var(--color-surface)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
             )}
             title="Section Properties Panel"
@@ -359,7 +359,7 @@ export function VisualPageBuilder({
             }
             target="_blank"
             rel="noreferrer"
-            className="btn-ghost h-8 px-2 text-[10px] inline-flex items-center"
+            className="btn-ghost h-8 px-2.5 text-[10px] inline-flex items-center"
             title="View Live Website"
           >
             <ExternalLink size={12} />
@@ -391,7 +391,8 @@ export function VisualPageBuilder({
                 <button
                   type="button"
                   onClick={() => setIsOutlineOpen(false)}
-                  className="p-1 rounded text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]"
+                  className="btn-icon h-8 w-8 border-0 text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]"
+                  title="Close Outline Drawer"
                 >
                   <X size={14} />
                 </button>
@@ -483,7 +484,8 @@ export function VisualPageBuilder({
                 <button
                   type="button"
                   onClick={() => setIsInspectorOpen(false)}
-                  className="p-1 rounded text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]"
+                  className="btn-icon h-8 w-8 border-0 text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]"
+                  title="Close Section Properties"
                 >
                   <X size={15} />
                 </button>

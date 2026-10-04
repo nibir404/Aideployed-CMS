@@ -27,6 +27,7 @@ An automated **Playwright E2E Test Suite** has been introduced and runs against 
 7. **Minimalist Responsive Architecture & Panel State Handling**: Fully responsive shell with desktop collapsible icon rail (`w-56` to `w-16`), mobile slide-over drawer, Webflow builder 3-state panels (desktop 3-pane dock, tablet adaptive panels, mobile segmented tab bar), and responsive layouts for Platform, FAQs, CRM Leads, and CLI sandbox.
 8. **Uncluttered & Effortless Visual Page Builder UI**: Full-width spacious canvas by default without permanent multi-column squeezing; sleek unobtrusive slide-over drawers for Page Outline and Section Properties; streamlined inline text editing without disruptive badge popovers.
 9. **Automated Playwright E2E Suite (100% Green)**: Comprehensive 9-test headless suite testing dashboard KPIs, visual canvas inline editing, properties drawers, platform modules, FAQ search/modal, leads inbox workflow, CLI offline query matching, live simulator frame, and mobile responsive drawers. Optimized with React `SectionContext` to eliminate unmounting during keystrokes.
+10. **Pure Design System & Uniform Button Height (`h-8` / 32px)**: Standardized all interactive buttons, selects, icon triggers, segmented toolbars, and inputs across the CMS shell, Visual Page Builder, Platform Studio, FAQs, CRM Leads, CLI Studio, and Live Simulator to the exact same 32px (`2rem`) height. Added `.btn-icon` utility and standardized form controls for baseline alignment.
 
 ---
 
@@ -150,6 +151,13 @@ src/
 ---
 
 ## 7. Evolution & Change Ledger
+
+### [2026-10-04] REFACTOR: Pure Design System & Uniform Button Height Standardization
+- **Timestamp**: 2026-10-04 06:42:00 UTC
+- **Description**: Standardized all button, select, icon trigger, and input heights across the application to a pure, uniform `h-8` (`2rem` / 32px) standard. Refined `src/app/globals.css` with `.btn-pill`, `.btn-ghost`, `.btn-icon`, and `.input-text` (with `textarea.input-text` multiline override). Updated `AdminHeader`, `VisualPageBuilder`, `PlatformEditor`, `FaqManager`, `LeadsInbox`, `CliKnowledgeStudio`, and `LivePreviewFrame` to eliminate all ad-hoc button paddings (`h-6`, `h-7`, `p-1`, `p-1.5`, `py-1.5`). Dynamic timestamps added to Playwright E2E suite to guarantee repeatable 100% green test passes.
+- **Files Touched**: `src/app/globals.css`, `src/core/ui/AdminHeader.tsx`, `src/modules/content/ui/VisualPageBuilder.tsx`, `src/modules/platform/ui/PlatformEditor.tsx`, `src/modules/faqs/ui/FaqManager.tsx`, `src/modules/leads/ui/LeadsInbox.tsx`, `src/modules/cli-knowledge/ui/CliKnowledgeStudio.tsx`, `src/core/ui/LivePreviewFrame.tsx`, `e2e/cms-full-suite.spec.ts`, `MEMORY.md`
+- **Key Decisions / Notes**: Ensures pixel-perfect baseline alignment across all toolbars, table action columns, and modal dialogs.
+- **Git Baseline**: `main` at `c4b4cc6 - feat(test): playwright e2e test suite & minimal ui polish (Nick404)`
 
 ### [2026-10-04] FEAT: Playwright E2E Test Suite & Minimal UI Polish
 - **Timestamp**: 2026-10-04 06:30:00 UTC

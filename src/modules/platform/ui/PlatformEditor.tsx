@@ -274,19 +274,19 @@ export function PlatformEditor({
               <button
                 type="button"
                 onClick={() => setShowMobilePreview(!showMobilePreview)}
-                className="lg:hidden btn-ghost h-7 px-2 text-[10px] flex items-center gap-1"
+                className="lg:hidden btn-ghost h-8 px-2.5 text-[10px] flex items-center gap-1"
                 title="Toggle Card Preview"
               >
-                <Eye size={11} />
+                <Eye size={12} />
                 <span>Card</span>
               </button>
 
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="btn-pill h-7 sm:h-8 px-3 text-[10px] flex items-center gap-1.5"
+                className="btn-pill h-8 px-3.5 text-[10px] flex items-center gap-1.5"
               >
-                <Save size={11} className={saving ? "animate-spin" : ""} />
+                <Save size={12} className={saving ? "animate-spin" : ""} />
                 <span>{saving ? "Saving" : "Save Module"}</span>
               </button>
             </div>
@@ -301,7 +301,7 @@ export function PlatformEditor({
                   <button
                     type="button"
                     onClick={() => setPreviewTheme(previewTheme === "dark" ? "light" : "dark")}
-                    className="p-1 rounded border hairline text-[10px]"
+                    className="btn-ghost h-8 px-2.5 text-[10px]"
                   >
                     Theme: {previewTheme}
                   </button>
@@ -356,9 +356,9 @@ export function PlatformEditor({
                 <button
                   type="button"
                   onClick={() => setBullets([...bullets, ""])}
-                  className="btn-ghost h-6 px-2 text-[9px] inline-flex items-center gap-1"
+                  className="btn-ghost h-8 px-2.5 text-[10px] inline-flex items-center gap-1"
                 >
-                  <Plus size={10} /> Add Bullet
+                  <Plus size={11} /> Add Bullet
                 </button>
               </div>
               <div className="space-y-2">
@@ -378,7 +378,8 @@ export function PlatformEditor({
                     <button
                       type="button"
                       onClick={() => setBullets(bullets.filter((_, idx) => idx !== i))}
-                      className="p-1.5 text-[var(--color-ink-dim)] hover:text-red-500 transition-colors"
+                      className="btn-icon h-8 w-8 text-[var(--color-ink-dim)] hover:text-red-500 hover:border-red-500/30 transition-colors"
+                      title="Remove Bullet"
                     >
                       <Trash2 size={12} />
                     </button>
@@ -426,9 +427,9 @@ export function PlatformEditor({
                     onClick={() =>
                       setMockFields([...mockFields, { label: "", value: "" }])
                     }
-                    className="btn-ghost h-6 px-2 text-[9px] inline-flex items-center gap-1"
+                    className="btn-ghost h-8 px-2.5 text-[10px] inline-flex items-center gap-1"
                   >
-                    <Plus size={10} /> Add Row
+                    <Plus size={11} /> Add Row
                   </button>
                 </div>
                 {mockFields.map((f, i) => (
@@ -471,7 +472,8 @@ export function PlatformEditor({
                       onClick={() =>
                         setMockFields(mockFields.filter((_, idx) => idx !== i))
                       }
-                      className="p-1.5 text-[var(--color-ink-dim)] hover:text-red-500 transition-colors"
+                      className="btn-icon h-8 w-8 text-[var(--color-ink-dim)] hover:text-red-500 hover:border-red-500/30 transition-colors"
+                      title="Remove Row"
                     >
                       <Trash2 size={12} />
                     </button>
