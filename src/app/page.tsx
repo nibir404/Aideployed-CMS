@@ -1,69 +1,324 @@
-import Image from "next/image";
+import { AdminLayout } from "@/core/ui/AdminLayout";
+import prisma from "@/core/db/prisma";
+import Link from "next/link";
+import {
+  Layers,
+  Cpu,
+  HelpCircle,
+  Terminal,
+  Inbox,
+  ArrowUpRight,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function DashboardPage() {
+  const [
+    sectionCount,
+    moduleCount,
+    faqCount,
+    topicCount,
+    leads,
+    webhookLogs,
+  ] = await Promise.all([
+    prisma.section.count(),
+    prisma.platformModule.count(),
+    prisma.faqItem.count(),
+    prisma.cliTopic.count(),
+    prisma.leadSubmission.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5,
+    }),
+    prisma.webhookLog.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 3,
+    }),
+  ]);
+
+  const newLeadsCount = await prisma.leadSubmission.count({
+    where: { status: "new" },
+  });
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <AdminLayout>
+      <div className="max-w-7xl mx-auto space-y-10">
+        {/* Top Hero Banner */}
+        <div className="card-surface p-8 relative overflow-hidden">
+          <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-white/[0.03] to-transparent pointer-events-none" />
+          <div className="relative z-10 max-w-2xl">
+            <span className="eyebrow block mb-3">Control Plane · AI Deployed</span>
+            <h2 className="text-2xl font-mono uppercase tracking-[0.08em] font-semibold text-white">
+              Operations & Editorial CMS
+            </h2>
+            <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
+              Bespoke CMS engine managing website sections, platform architecture,
+              inbound enterprise lead pipelines, and AI CLI assistant knowledge for{" "}
+              <a
+                href="https://www.aideployed.io"
+                target="_blank"
+                rel="noreferrer"
+                className="text-white underline underline-offset-4 hover:text-[var(--color-accent)]"
+              >
+                aideployed.io
+              </a>
+              .
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Core Metric Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link
+            href="/content"
+            className="card-surface p-6 flex flex-col justify-between group hover:border-neutral-500/50 transition-all"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <div className="flex items-center justify-between text-neutral-400">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em]">
+                Page Sections
+              </span>
+              <Layers size={16} className="group-hover:text-white transition-colors" />
+            </div>
+            <div className="mt-4">
+              <div className="text-3xl font-mono font-medium text-white">
+                {sectionCount}
+              </div>
+              <div className="mt-1 text-xs text-neutral-400 font-mono">
+                Across Home & Editorial
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            href="/platform"
+            className="card-surface p-6 flex flex-col justify-between group hover:border-neutral-500/50 transition-all"
           >
-            Documentation
-          </a>
+            <div className="flex items-center justify-between text-neutral-400">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em]">
+                Platform Modules
+              </span>
+              <Cpu size={16} className="group-hover:text-white transition-colors" />
+            </div>
+            <div className="mt-4">
+              <div className="text-3xl font-mono font-medium text-white">
+                {moduleCount}
+              </div>
+              <div className="mt-1 text-xs text-neutral-400 font-mono">
+                Build to Measure (7 Anchors)
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            href="/leads"
+            className="card-surface p-6 flex flex-col justify-between group hover:border-neutral-500/50 transition-all"
+          >
+            <div className="flex items-center justify-between text-neutral-400">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em]">
+                Inbound Leads
+              </span>
+              <Inbox size={16} className="group-hover:text-white transition-colors" />
+            </div>
+            <div className="mt-4 flex items-baseline gap-2">
+              <div className="text-3xl font-mono font-medium text-white">
+                {leads.length}
+              </div>
+              {newLeadsCount > 0 && (
+                <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded-[3px] bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  {newLeadsCount} New
+                </span>
+              )}
+            </div>
+            <div className="mt-1 text-xs text-neutral-400 font-mono">
+              From /contact Intake
+            </div>
+          </Link>
+
+          <Link
+            href="/cli-knowledge"
+            className="card-surface p-6 flex flex-col justify-between group hover:border-neutral-500/50 transition-all"
+          >
+            <div className="flex items-center justify-between text-neutral-400">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em]">
+                CLI Topics
+              </span>
+              <Terminal size={16} className="group-hover:text-white transition-colors" />
+            </div>
+            <div className="mt-4">
+              <div className="text-3xl font-mono font-medium text-white">
+                {topicCount}
+              </div>
+              <div className="mt-1 text-xs text-neutral-400 font-mono">
+                Live interactive matcher
+              </div>
+            </div>
+          </Link>
         </div>
-      </main>
-    </div>
+
+        {/* Two-Column Workspace Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Recent Inbound Leads */}
+          <div className="lg:col-span-8 card-surface overflow-hidden flex flex-col">
+            <div className="p-6 border-b hairline flex items-center justify-between">
+              <div>
+                <span className="eyebrow block">Intake Stream</span>
+                <h3 className="font-mono text-sm font-semibold uppercase tracking-[0.12em] text-white mt-1">
+                  Recent Inbound Inquiries
+                </h3>
+              </div>
+              <Link
+                href="/leads"
+                className="btn-ghost h-8 px-3 inline-flex items-center gap-1.5 text-[10px]"
+              >
+                <span>View All Leads</span>
+                <ArrowUpRight size={11} />
+              </Link>
+            </div>
+
+            <div className="divide-y hairline">
+              {leads.length === 0 ? (
+                <div className="p-8 text-center text-sm text-neutral-400 font-mono">
+                  No submissions recorded yet.
+                </div>
+              ) : (
+                leads.map((lead) => (
+                  <div
+                    key={lead.id}
+                    className="p-5 hover:bg-white/[0.02] transition-colors flex items-start justify-between gap-4"
+                  >
+                    <div className="space-y-1.5 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm text-white">
+                          {lead.name}
+                        </span>
+                        {lead.organization && (
+                          <span className="text-xs text-neutral-400 font-mono">
+                            · {lead.organization}
+                          </span>
+                        )}
+                        <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded-[3px] border border-neutral-700 bg-neutral-800 text-neutral-300">
+                          {lead.engagementTier}
+                        </span>
+                      </div>
+                      <p className="text-xs text-neutral-400 line-clamp-1">
+                        {lead.message}
+                      </p>
+                      <div className="flex items-center gap-3 text-[10px] font-mono text-neutral-400">
+                        <span>{lead.email}</span>
+                        <span>·</span>
+                        <span className="flex items-center gap-1">
+                          <Clock size={10} />
+                          {new Date(lead.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <span
+                        className={`font-mono text-[9px] uppercase tracking-[0.14em] px-2 py-1 rounded-[3px] border ${
+                          lead.status === "new"
+                            ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
+                            : lead.status === "contacted"
+                            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                            : "bg-neutral-800 border-neutral-700 text-neutral-400"
+                        }`}
+                      >
+                        {lead.status}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Quick Shortcuts & API Status */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* Quick Actions */}
+            <div className="card-surface p-6">
+              <span className="eyebrow block mb-3">Quick Navigation</span>
+              <div className="space-y-2">
+                <Link
+                  href="/content"
+                  className="flex items-center justify-between p-3 rounded-[4px] border hairline hover:border-neutral-600 bg-[#141414] hover:bg-[#181818] transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <Layers size={14} className="text-[var(--color-accent)]" />
+                    <span className="font-mono text-xs uppercase tracking-[0.1em] text-neutral-200">
+                      Edit Hero & Sections
+                    </span>
+                  </div>
+                  <ArrowUpRight size={12} className="text-neutral-500" />
+                </Link>
+
+                <Link
+                  href="/platform"
+                  className="flex items-center justify-between p-3 rounded-[4px] border hairline hover:border-neutral-600 bg-[#141414] hover:bg-[#181818] transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <Cpu size={14} className="text-[var(--color-accent)]" />
+                    <span className="font-mono text-xs uppercase tracking-[0.1em] text-neutral-200">
+                      Platform Modules (7)
+                    </span>
+                  </div>
+                  <ArrowUpRight size={12} className="text-neutral-500" />
+                </Link>
+
+                <Link
+                  href="/cli-knowledge"
+                  className="flex items-center justify-between p-3 rounded-[4px] border hairline hover:border-neutral-600 bg-[#141414] hover:bg-[#181818] transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <Terminal size={14} className="text-[var(--color-accent)]" />
+                    <span className="font-mono text-xs uppercase tracking-[0.1em] text-neutral-200">
+                      Test AI CLI Matcher
+                    </span>
+                  </div>
+                  <ArrowUpRight size={12} className="text-neutral-500" />
+                </Link>
+
+                <Link
+                  href="/faqs"
+                  className="flex items-center justify-between p-3 rounded-[4px] border hairline hover:border-neutral-600 bg-[#141414] hover:bg-[#181818] transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <HelpCircle size={14} className="text-[var(--color-accent)]" />
+                    <span className="font-mono text-xs uppercase tracking-[0.1em] text-neutral-200">
+                      Manage FAQs
+                    </span>
+                  </div>
+                  <ArrowUpRight size={12} className="text-neutral-500" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Delivery & Revalidation Status */}
+            <div className="card-surface p-6">
+              <span className="eyebrow block mb-3">Cache & Webhooks</span>
+              <div className="space-y-3 font-mono text-xs">
+                <div className="flex items-center justify-between py-1 border-b hairline">
+                  <span className="text-neutral-400">Endpoint</span>
+                  <span className="text-neutral-200 truncate max-w-[150px]">
+                    /api/v1/content
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-1 border-b hairline">
+                  <span className="text-neutral-400">Cache Tags</span>
+                  <span className="text-neutral-200">cms-content</span>
+                </div>
+                <div className="flex items-center justify-between py-1">
+                  <span className="text-neutral-400">Recent Dispatch</span>
+                  <span className="text-emerald-400 flex items-center gap-1 text-[11px]">
+                    <CheckCircle2 size={11} /> Ready
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </AdminLayout>
   );
 }

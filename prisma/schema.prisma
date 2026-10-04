@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Page {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  seoTitle    String?
+  seoDesc     String?
+  ogImage     String?
+  isPublished Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  sections    Section[]
+}
+
+model Section {
+  id          String   @id @default(cuid())
+  pageId      String
+  page        Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  sectionKey  String
+  title       String?
+  contentJson String   // JSON string storing section data
+  orderIndex  Int      @default(0)
+  isPublished Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+
+  @@unique([pageId, sectionKey])
+}
+
+model PlatformModule {
+  id             String   @id @default(cuid())
+  key            String   @unique
+  eyebrow        String
+  title          String
+  bodyText       String
+  bulletsJson    String   // JSON array of strings
+  mockCardTitle  String?
+  mockCardUrl    String
+  mockFieldsJson String   // JSON array of { label, value, chip? }
+  orderIndex     Int      @default(0)
+  isPublished    Boolean  @default(true)
+  updatedAt      DateTime @updatedAt
+}
+
+model FaqItem {
+  id          String   @id @default(cuid())
+  question    String
+  answerHtml  String
+  category    String   @default("general")
+  orderIndex  Int      @default(0)
+  isPublished Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+}
+
+model CliTopic {
+  id           String   @id @default(cuid())
+  topicId      String   @unique
+  keywordsJson String   // JSON array of string aliases
+  title        String
+  summary      String
+  factsJson    String   // JSON array of string bullet facts
+  linksJson    String?  // JSON array of { label, href }
+  updatedAt    DateTime @updatedAt
+}
+
+model LeadSubmission {
+  id             String   @id @default(cuid())
+  name           String
+  email          String
+  organization   String?
+  engagementTier String   // "foundation" | "embedded" | "scaled" | "unsure"
+  message        String
+  status         String   @default("new") // "new", "in_review", "contacted", "closed"
+  notes          String?
+  ipAddress      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  mimeType  String
+  sizeBytes Int
+  altText   String?
+  createdAt DateTime @default(now())
+}
+
+model WebhookLog {
+  id           String   @id @default(cuid())
+  endpoint     String
+  tag          String?
+  status       String   // "success" | "failed"
+  responseCode Int
+  createdAt    DateTime @default(now())
+}
