@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { cn } from "@/core/lib/cn";
-import { Edit3 } from "lucide-react";
 
 interface EditableTextProps {
   value: string;
@@ -27,7 +26,6 @@ export function EditableText({
 }: EditableTextProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [currentText, setCurrentText] = useState(value || "");
-  const [isHovered, setIsHovered] = useState(false);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
 
   // Sync state if prop changes externally
@@ -60,31 +58,16 @@ export function EditableText({
     }
   };
 
-  // When not in edit mode (Preview Mode), render clean native element
+  // Preview Mode: render completely native element without any edit wrappers
   if (!isEditMode) {
     const TagName = tag;
     return <TagName className={className}>{value || placeholder}</TagName>;
   }
 
   return (
-    <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="relative group/edit inline-block w-full max-w-full"
-    >
-      {/* Webflow-style floating element pill badge */}
-      {isHovered && !isEditing && (
-        <span className="absolute -top-5 left-0 z-30 font-mono text-[9px] uppercase tracking-[0.14em] bg-cyan-600 text-white px-1.5 py-0.5 rounded-[2px] shadow-md flex items-center gap-1 pointer-events-none whitespace-nowrap animate-fade-in">
-          <Edit3 size={9} />
-          <span>{label}</span>
-        </span>
-      )}
-
+    <span className="relative inline-block w-full max-w-full">
       {isEditing ? (
-        <div className="relative z-20">
-          <span className="absolute -top-5 left-0 z-30 font-mono text-[9px] uppercase tracking-[0.14em] bg-emerald-600 text-white px-1.5 py-0.5 rounded-[2px] shadow-md flex items-center gap-1 pointer-events-none whitespace-nowrap">
-            <span>Editing · Enter to finish</span>
-          </span>
+        <span className="relative inline-block w-full">
           {multiline ? (
             <textarea
               ref={inputRef as React.RefObject<HTMLTextAreaElement>}
@@ -97,7 +80,7 @@ export function EditableText({
               onKeyDown={handleKeyDown}
               rows={Math.max(2, currentText.split("\n").length)}
               className={cn(
-                "w-full bg-cyan-500/10 text-inherit font-inherit text-left resize-y rounded ring-2 ring-cyan-500 outline-none p-1",
+                "w-full bg-cyan-500/10 text-inherit font-inherit text-left resize-y rounded outline-none ring-2 ring-cyan-500 p-1.5 transition-all",
                 className
               )}
             />
@@ -113,29 +96,28 @@ export function EditableText({
               onBlur={handleBlur}
               onKeyDown={handleKeyDown}
               className={cn(
-                "w-full bg-cyan-500/10 text-inherit font-inherit text-left rounded ring-2 ring-cyan-500 outline-none p-1",
+                "w-full bg-cyan-500/10 text-inherit font-inherit text-left rounded outline-none ring-2 ring-cyan-500 px-1.5 py-0.5 transition-all",
                 className
               )}
             />
           )}
-        </div>
+        </span>
       ) : (
-        <div
+        <span
           onClick={() => setIsEditing(true)}
           className={cn(
-            "cursor-text transition-all rounded px-0.5 -mx-0.5",
-            isHovered && "ring-1 ring-cyan-500/50 bg-cyan-500/5",
+            "cursor-text transition-all rounded px-0.5 -mx-0.5 hover:outline hover:outline-1 hover:outline-cyan-500/50 hover:bg-cyan-500/5",
             className
           )}
-          title={`Click to edit ${label} inline (Webflow style)`}
+          title={`Click to edit ${label}`}
         >
           {currentText || (
-            <span className="text-[var(--color-ink-dim)] italic">
+            <span className="text-[var(--color-ink-dim)] italic opacity-60">
               {placeholder}
             </span>
           )}
-        </div>
+        </span>
       )}
-    </div>
+    </span>
   );
 }

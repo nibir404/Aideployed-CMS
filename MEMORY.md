@@ -23,6 +23,7 @@ All 6 primary pages from the live marketing website have been analyzed, structur
 5. **Full Seed Data**: Seeded complete section-level content for all 6 pages from the authentic AiDeployed site.
 6. **Git History Sanitization**: All repository commits cleanly attributed to `Nick404 <nibirimtiaz1@gmail.com>` with no obsolete company references.
 7. **Minimalist Responsive Architecture & Panel State Handling**: Fully responsive shell with desktop collapsible icon rail (`w-56` to `w-16`), mobile slide-over drawer, Webflow builder 3-state panels (desktop 3-pane dock, tablet adaptive panels, mobile segmented tab bar), and responsive layouts for Platform, FAQs, CRM Leads, and CLI sandbox.
+8. **Uncluttered & Effortless Visual Page Builder UI**: Full-width spacious canvas by default without permanent multi-column squeezing; sleek unobtrusive slide-over drawers for Page Outline and Section Properties; streamlined inline text editing without disruptive badge popovers.
 
 ---
 
@@ -146,6 +147,13 @@ src/
 ---
 
 ## 7. Evolution & Change Ledger
+
+### [2026-10-04] REFACTOR: Uncluttered & Effortless Visual Page Builder UI
+- **Timestamp**: 2026-10-04 05:11:44 UTC
+- **Description**: Transformed Visual Page Builder into a spacious, distraction-free editing canvas. Removed permanent 4-column layout; replaced with clean top controls (page selector, quick section jump, device toggle, theme toggle, save button). Replaced fixed sidebars with on-demand slide-over drawers for Page Outline and Section Properties. Streamlined inline text editing by removing disruptive hover badges in favor of subtle, smooth outlines.
+- **Files Touched**: `src/modules/content/ui/EditableText.tsx, src/modules/content/ui/VisualPageBuilder.tsx, src/modules/content/ui/VisualPageCanvas.tsx`
+- **Key Decisions / Notes**: Canvas is now 100% full-width by default, offering an effortless Framer/Notion-like editing experience with zero clutter.
+- **Git Baseline**: `main` at `0476e5a - feat(ui): minimal responsive cms layout with intelligent panel state handling (Nick404)`
 
 ### [2026-10-04] FEAT: Minimal & Responsive CMS Panels with Breakpoint State Handling
 - **Timestamp**: 2026-10-04 05:01:03 UTC

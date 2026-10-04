@@ -59,15 +59,21 @@ export function VisualPageCanvas({
         onClick={() => onSelectSection?.(sectionKey)}
         className={cn(
           "relative transition-all border-b hairline group/sec",
-          isEditMode && "hover:ring-1 hover:ring-cyan-500/40",
-          isSelected && isEditMode && "ring-2 ring-cyan-500/80 shadow-md",
+          isEditMode && "hover:outline hover:outline-1 hover:outline-cyan-500/30",
+          isSelected && isEditMode && "outline outline-2 outline-cyan-500/70 bg-cyan-500/[0.01]",
           className
         )}
       >
         {isEditMode && (
-          <div className="absolute top-2 left-4 z-20 font-mono text-[9px] uppercase tracking-[0.16em] px-2 py-0.5 rounded-[2px] bg-neutral-900/90 text-cyan-400 border border-cyan-500/30 shadow-sm opacity-60 group-hover/sec:opacity-100 flex items-center gap-1.5 pointer-events-none transition-opacity">
-            <span className="size-1.5 rounded-full bg-cyan-400" />
-            <span>Section: {title}</span>
+          <div
+            className={cn(
+              "absolute top-2 right-4 z-20 font-mono text-[9px] uppercase tracking-[0.14em] px-2 py-0.5 rounded-[3px] backdrop-blur-md shadow-xs flex items-center gap-1.5 transition-all pointer-events-none",
+              isSelected
+                ? "bg-cyan-600 text-white opacity-100 font-semibold"
+                : "bg-neutral-900/80 text-neutral-300 opacity-0 group-hover/sec:opacity-100"
+            )}
+          >
+            <span>{title}</span>
           </div>
         )}
         {children}
