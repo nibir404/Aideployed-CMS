@@ -18,7 +18,17 @@
   --color-accent-ink: #141414;
   --color-accent-glow: rgba(231, 231, 231, 0.12);
 
-  /* Semantic status colors tuned to monochrome harmony */
+  /* Light overrides */
+  --color-bg-light: #f6f1e7;
+  --color-surface-light: #efe9dc;
+  --color-card-light: #fbf8f1;
+  --color-ink-light: #1a1611;
+  --color-ink-muted-light: #574e3e;
+  --color-ink-dim-light: #7d7363;
+  --color-line-light: rgba(26, 22, 17, 0.10);
+  --color-line-strong-light: rgba(26, 22, 17, 0.18);
+
+  /* Semantic status colors */
   --color-status-success: #10b981;
   --color-status-warning: #f59e0b;
   --color-status-info: #38bdf8;
@@ -39,6 +49,28 @@
     --foreground: #ffffff;
   }
 
+  html.light {
+    color-scheme: light;
+    --background: var(--color-bg-light);
+    --foreground: var(--color-ink-light);
+    --color-bg: var(--color-bg-light);
+    --color-surface: var(--color-surface-light);
+    --color-surface-hover: #e8e2d4;
+    --color-card: var(--color-card-light);
+    --color-card-border: var(--color-line-strong-light);
+    --color-ink: var(--color-ink-light);
+    --color-ink-muted: var(--color-ink-muted-light);
+    --color-ink-dim: var(--color-ink-dim-light);
+    --color-line: var(--color-line-light);
+    --color-line-strong: var(--color-line-strong-light);
+
+    /* In light mode accent flips from platinum to charcoal */
+    --color-accent: #323131;
+    --color-accent-soft: #707070;
+    --color-accent-ink: #f6f1e7;
+    --color-accent-glow: rgba(50, 49, 49, 0.12);
+  }
+
   body {
     background-color: var(--color-bg);
     color: var(--color-ink);
@@ -46,11 +78,17 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   ::selection {
     background-color: rgba(231, 231, 231, 0.25);
     color: #ffffff;
+  }
+
+  html.light ::selection {
+    background-color: rgba(50, 49, 49, 0.25);
+    color: #1a1611;
   }
 
   /* Custom scrollbar */
@@ -62,37 +100,37 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--color-line-strong);
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--color-ink-dim);
   }
 }
 
 /* Hairline utility borders & card surfaces matching AI Deployed */
 .hairline {
-  border-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-line);
 }
 
 .hairline-strong {
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: var(--color-line-strong);
 }
 
 .card-surface {
-  background-color: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
   border-radius: 4px;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .card-surface:hover {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: var(--color-line-strong);
 }
 
 .card-panel {
-  background-color: #141414;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background-color: var(--color-card);
+  border: 1px solid var(--color-line);
   border-radius: 4px;
 }
 
@@ -120,13 +158,13 @@
   color: var(--color-accent-ink);
   font-weight: 500;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 .btn-pill:hover {
-  background-color: #ffffff;
+  opacity: 0.92;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 12px var(--color-accent-glow);
 }
 
 .btn-ghost {
@@ -141,19 +179,19 @@
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-line);
   color: var(--color-ink-muted);
   background-color: transparent;
   transition: all 0.2s ease;
 }
 
 .btn-ghost:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.03);
+  border-color: var(--color-line-strong);
+  color: var(--color-ink);
+  background-color: var(--color-surface-hover);
 }
 
 .grid-bg-dots {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-image: radial-gradient(var(--color-line-strong) 1px, transparent 1px);
   background-size: 24px 24px;
 }
