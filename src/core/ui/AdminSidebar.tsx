@@ -21,8 +21,8 @@ import { cn } from "@/core/lib/cn";
 
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/content", label: "Visual Builder", icon: Layers, badge: "Inline Edit" },
   { href: "/preview", label: "Live Preview", icon: Monitor, badge: "Live" },
-  { href: "/content", label: "Content Studio", icon: Layers, badge: "9 sections" },
   { href: "/platform", label: "Platform (7)", icon: Cpu, badge: "7 modules" },
   { href: "/faqs", label: "FAQ Directory", icon: HelpCircle },
   { href: "/cli-knowledge", label: "CLI Knowledge", icon: Terminal, badge: "Sandbox" },
