@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { HelpCircle, Plus, Edit2, Trash2, CheckCircle2, X, Search } from "lucide-react";
+import { HelpCircle, Plus, Edit2, Trash2, CheckCircle2, X, Search, ChevronDown } from "lucide-react";
 import type { FaqEntity } from "../types";
 import { cn } from "@/core/lib/cn";
 
@@ -114,15 +114,15 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Top Filter and Actions */}
-      <div className="card-surface p-4 flex flex-wrap items-center justify-between gap-4 border hairline">
-        <div className="flex flex-wrap items-center gap-3 flex-1">
+      <div className="card-surface p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 border hairline rounded-[6px]">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 flex-1 min-w-[240px]">
           {/* Quick Search */}
-          <div className="relative min-w-[200px] max-w-xs">
+          <div className="relative min-w-[180px] max-w-xs flex-1">
             <Search
               size={12}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-dim)]"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--color-ink-dim)]"
             />
             <input
               type="text"
@@ -131,21 +131,28 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
               placeholder="Search questions..."
               className="input-text pl-8 py-1.5 text-xs input-mono"
             />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]"
+              >
+                <X size={12} />
+              </button>
+            )}
           </div>
 
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-            <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--color-ink-dim)] mr-1">
-              Categories:
-            </span>
+          {/* Category Pills */}
+          <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 max-w-full">
             {categories.map((cat) => (
               <button
                 key={cat}
                 type="button"
                 onClick={() => setCategoryFilter(cat)}
                 className={cn(
-                  "px-2.5 py-1 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.12em] transition-colors",
+                  "px-2.5 py-1 rounded-[3px] font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] shrink-0 transition-colors",
                   categoryFilter === cat
-                    ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold shadow-sm"
+                    ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)] font-semibold shadow-xs"
                     : "bg-[var(--color-surface)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] border hairline"
                 )}
               >
@@ -155,27 +162,27 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {toast && (
-            <span className="badge-status-success">
-              <CheckCircle2 size={11} /> {toast}
+            <span className="badge-status-success text-[9px] py-0.5">
+              <CheckCircle2 size={10} /> {toast}
             </span>
           )}
           <button
             onClick={openCreateModal}
-            className="btn-pill h-8 px-3.5 text-[10px] flex items-center gap-1.5"
+            className="btn-pill h-7 sm:h-8 px-3 text-[10px] flex items-center gap-1.5"
           >
-            <Plus size={12} />
+            <Plus size={11} />
             <span>Add FAQ</span>
           </button>
         </div>
       </div>
 
-      {/* FAQ Grid */}
+      {/* FAQ Responsive Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredFaqs.length === 0 ? (
-          <div className="md:col-span-2 p-12 text-center card-surface border hairline">
-            <HelpCircle size={24} className="mx-auto text-[var(--color-ink-dim)] mb-2" />
+          <div className="md:col-span-2 p-8 sm:p-12 text-center card-surface border hairline rounded-[6px]">
+            <HelpCircle size={22} className="mx-auto text-[var(--color-ink-dim)] mb-2" />
             <div className="font-mono text-xs text-[var(--color-ink-muted)]">
               No FAQs found matching filter.
             </div>
@@ -184,40 +191,40 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
           filteredFaqs.map((faq) => (
             <div
               key={faq.id}
-              className="card-surface p-5 rounded-[4px] border hairline flex flex-col justify-between space-y-4 hover:border-[var(--color-line-strong)] transition-all group shadow-sm"
+              className="card-surface p-4 sm:p-5 rounded-[6px] border hairline flex flex-col justify-between space-y-3 hover:border-[var(--color-line-strong)] transition-all group shadow-xs"
             >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="font-mono text-[9px] uppercase px-2 py-0.5 rounded-[3px] border hairline bg-[var(--color-surface)] text-[var(--color-ink-dim)]">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded-[2px] border hairline bg-[var(--color-surface)] text-[var(--color-ink-dim)]">
                     {faq.category}
                   </span>
                   <span className="font-mono text-[9px] text-[var(--color-ink-dim)]">
-                    Order: {faq.orderIndex}
+                    #{faq.orderIndex}
                   </span>
                 </div>
-                <h3 className="font-medium text-sm text-[var(--color-ink)] leading-snug">
+                <h3 className="font-medium text-xs sm:text-sm text-[var(--color-ink)] leading-snug">
                   {faq.question}
                 </h3>
                 <div
-                  className="text-xs text-[var(--color-ink-muted)] leading-relaxed line-clamp-4"
+                  className="text-xs text-[var(--color-ink-muted)] leading-relaxed line-clamp-3 font-sans"
                   dangerouslySetInnerHTML={{ __html: faq.answerHtml }}
                 />
               </div>
 
-              <div className="pt-3 border-t hairline flex items-center justify-end gap-1.5">
+              <div className="pt-2.5 border-t hairline flex items-center justify-end gap-1">
                 <button
                   onClick={() => openEditModal(faq)}
                   className="p-1.5 text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] rounded-[3px] transition-colors"
                   title="Edit FAQ"
                 >
-                  <Edit2 size={13} />
+                  <Edit2 size={12} />
                 </button>
                 <button
                   onClick={() => handleDelete(faq.id)}
                   className="p-1.5 text-[var(--color-ink-dim)] hover:text-red-500 hover:bg-red-500/10 rounded-[3px] transition-colors"
                   title="Delete FAQ"
                 >
-                  <Trash2 size={13} />
+                  <Trash2 size={12} />
                 </button>
               </div>
             </div>
@@ -227,9 +234,9 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
 
       {/* Modal Dialog for Create/Edit */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="card-surface max-w-xl w-full p-6 space-y-5 border hairline-strong shadow-2xl rounded-[6px]">
-            <div className="flex items-center justify-between border-b hairline pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fade-in">
+          <div className="card-surface max-w-lg w-full p-4 sm:p-6 space-y-4 border hairline-strong shadow-2xl rounded-[6px]">
+            <div className="flex items-center justify-between border-b hairline pb-2.5">
               <h3 className="font-mono text-xs uppercase tracking-[0.14em] font-semibold text-[var(--color-ink)]">
                 {editingFaq ? "Edit FAQ Item" : "Create New FAQ"}
               </h3>
@@ -237,11 +244,11 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
                 onClick={() => setIsModalOpen(false)}
                 className="text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] p-1 rounded"
               >
-                <X size={16} />
+                <X size={15} />
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="space-y-4">
+            <form onSubmit={handleSave} className="space-y-3.5">
               <div>
                 <label className="label-text">Question</label>
                 <input
@@ -250,7 +257,7 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   placeholder="e.g. What does AI Deployed actually do?"
-                  className="input-text font-medium"
+                  className="input-text font-medium text-xs"
                 />
               </div>
 
@@ -261,7 +268,7 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   placeholder="e.g. general, business, governance"
-                  className="input-text input-mono"
+                  className="input-text input-mono text-xs"
                 />
               </div>
 
@@ -277,18 +284,18 @@ export function FaqManager({ initialFaqs }: { initialFaqs: FaqEntity[] }) {
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t hairline">
+              <div className="flex items-center justify-end gap-2 pt-2.5 border-t hairline">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="btn-ghost h-8 px-3 text-[10px]"
+                  className="btn-ghost h-7 sm:h-8 px-3 text-[10px]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="btn-pill h-8 px-4 text-[10px]"
+                  className="btn-pill h-7 sm:h-8 px-3.5 text-[10px]"
                 >
                   {saving ? "Saving..." : editingFaq ? "Update FAQ" : "Create FAQ"}
                 </button>

@@ -1,26 +1,29 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Terminal, RefreshCw, Eye, Monitor } from "lucide-react";
+import { RefreshCw, Monitor, Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
+import { useAdminUi } from "./AdminUiContext";
 
 export function AdminHeader() {
   const pathname = usePathname();
+  const { toggleSidebarMobile, toggleSidebarDesktop, sidebarCollapsedDesktop } = useAdminUi();
+
   const [publishing, setPublishing] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const getBreadcrumb = () => {
-    if (pathname === "/") return "Overview & Metrics";
-    if (pathname.startsWith("/preview")) return "Live Website Simulator Preview";
-    if (pathname.startsWith("/content")) return "Content Studio / Section Editor";
-    if (pathname.startsWith("/platform")) return "Platform Architecture (7 Modules)";
-    if (pathname.startsWith("/faqs")) return "FAQ Directory & Categorization";
-    if (pathname.startsWith("/cli-knowledge")) return "CLI Knowledge Base & Simulator";
-    if (pathname.startsWith("/leads")) return "Inbound Leads CRM & Ingestion";
-    if (pathname.startsWith("/settings")) return "System Settings & API Webhooks";
-    return "Operations Console";
+    if (pathname === "/") return "Overview";
+    if (pathname.startsWith("/preview")) return "Live Simulator";
+    if (pathname.startsWith("/content")) return "Visual Builder";
+    if (pathname.startsWith("/platform")) return "Platform Modules";
+    if (pathname.startsWith("/faqs")) return "FAQ Directory";
+    if (pathname.startsWith("/cli-knowledge")) return "CLI Knowledge";
+    if (pathname.startsWith("/leads")) return "Leads CRM";
+    if (pathname.startsWith("/settings")) return "Settings";
+    return "Console";
   };
 
   const handleGlobalPublish = async () => {
@@ -29,53 +32,80 @@ export function AdminHeader() {
     try {
       const res = await fetch("/api/v1/revalidate", { method: "POST" });
       const data = await res.json();
-      setMessage(data.message || "Published to production");
+      setMessage(data.message || "Published");
     } catch {
       setMessage("Published");
     } finally {
       setPublishing(false);
-      setTimeout(() => setMessage(null), 3000);
+      setTimeout(() => setMessage(null), 2500);
     }
   };
 
   return (
-    <header className="h-20 border-b hairline px-8 flex items-center justify-between bg-[var(--color-bg)]/90 backdrop-blur-md sticky top-0 z-40">
-      <div className="flex items-center gap-4">
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--color-ink-dim)]">
-          SYS //
-        </span>
-        <span className="font-mono text-[12px] uppercase tracking-[0.14em] text-[var(--color-ink)] font-medium">
-          {getBreadcrumb()}
-        </span>
+    <header className="h-14 border-b hairline px-4 sm:px-6 flex items-center justify-between bg-[var(--color-bg)]/90 backdrop-blur-md sticky top-0 z-30 select-none">
+      {/* Left: Mobile Hamburger & Desktop Toggle + Breadcrumb */}
+      <div className="flex items-center gap-3">
+        {/* Mobile Hamburger Drawer Toggle */}
+        <button
+          type="button"
+          onClick={toggleSidebarMobile}
+          className="lg:hidden p-1.5 -ml-1 rounded-[4px] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] transition-colors"
+          aria-label="Open Navigation Menu"
+        >
+          <Menu size={18} />
+        </button>
+
+        {/* Desktop Sidebar Toggle */}
+        <button
+          type="button"
+          onClick={toggleSidebarDesktop}
+          className="hidden lg:flex p-1.5 -ml-1 rounded-[4px] text-[var(--color-ink-dim)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-hover)] transition-colors"
+          title={sidebarCollapsedDesktop ? "Expand Sidebar" : "Collapse Sidebar"}
+        >
+          {sidebarCollapsedDesktop ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+        </button>
+
+        {/* Breadcrumb Indicator */}
+        <div className="flex items-center gap-2 font-mono">
+          <span className="text-[10px] uppercase tracking-[0.16em] text-[var(--color-ink-dim)] hidden sm:inline">
+            SYS //
+          </span>
+          <span className="text-xs uppercase tracking-[0.12em] text-[var(--color-ink)] font-semibold truncate max-w-[180px] sm:max-w-none">
+            {getBreadcrumb()}
+          </span>
+        </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      {/* Right: Quick Actions */}
+      <div className="flex items-center gap-2">
         {message && (
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-emerald-500 border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 rounded-[4px] animate-fade-in">
+          <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-emerald-500 border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 rounded-[3px] animate-fade-in hidden sm:inline-block">
             {message}
           </span>
         )}
 
-        {/* Live Preview Modal Link */}
+        {/* Live Preview Button */}
         <Link
           href="/preview"
-          className="btn-ghost inline-flex items-center gap-1.5 h-9 px-3"
-          title="Interactive Live Website Preview inside CMS"
+          className="btn-ghost inline-flex items-center gap-1.5 h-8 px-2.5 text-[10px]"
+          title="Interactive Live Simulator"
         >
-          <Monitor size={13} />
-          <span>Live Preview</span>
+          <Monitor size={12} />
+          <span className="hidden md:inline">Simulator</span>
         </Link>
 
         {/* Theme Toggle (Dark & Light) */}
         <ThemeToggle />
 
+        {/* Global Publish & Sync */}
         <button
           onClick={handleGlobalPublish}
           disabled={publishing}
-          className="btn-pill h-9 px-4 flex items-center gap-2"
+          className="btn-pill h-8 px-3 text-[10px] flex items-center gap-1.5"
+          title="Publish & Sync to target site"
         >
-          <RefreshCw size={12} className={publishing ? "animate-spin" : ""} />
-          <span>{publishing ? "Publishing..." : "Publish & Sync"}</span>
+          <RefreshCw size={11} className={publishing ? "animate-spin" : ""} />
+          <span className="hidden sm:inline">{publishing ? "Syncing..." : "Sync"}</span>
         </button>
       </div>
     </header>
